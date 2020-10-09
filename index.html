@@ -1,0 +1,187 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <link rel="stylesheet" href="battlemap.css">
+    <title>BattleMap</title>
+</head>
+
+<body style="text-align: center;">
+    
+    <h1>Battle-Map</h1>
+
+    <!--INITIATIVE ORDER-->
+    <form class="initiative">
+        <p>Turn Order</p>
+        <label for="newEntity">New Entity and Initiative:</label>
+        <input type="text" id="newEntity" name="newEntity">
+        <input type="number" id="init" name="init">
+    </form>
+    
+    <!--STORAGE-->
+    <div class="maplist">
+
+    </div>
+
+
+    <div class="container"  >
+        <!--TOOLBAR-->
+        <ul class="toolbar">
+            <li><button class="button" id="enemy">New Enemy</button></li>
+            <li><button class="button" id="ally">New Ally</button></li>
+            <li><button class="button" id="object">New Object</button></li>
+            <li><button class="button" id="delete">Delete</button></li>
+            <li><span class="button menu" id="menu">Menu
+                    <ul class="dropdown" >
+                        <li><button id="clear">Clear</button></li>
+                        <li><button id="save">Save</button></li>
+                    </ul>
+                </span>
+            </li>
+        </ul>
+
+            <!--MAIN GRID-->
+        <div class="battlemap">
+                <div class="grid">
+                    <div id="col0">
+                        <div class="element col0 field0" tabindex="1" ></div>
+                        <div class="element col0 field1" tabindex="1" ></div>
+                        <div class="element col0 field2" tabindex="1" ></div>
+                        <div class="element col0 field3" tabindex="1" ></div>
+                        <div class="element col0 field4" tabindex="1" ></div>
+                        <div class="element col0 field5" tabindex="1" ></div>
+                        <div class="element col0 field6" tabindex="1" ></div>
+                        <div class="element col0 field7" tabindex="1" ></div>
+                        <div class="element col0 field8" tabindex="1" ></div>
+                        <div class="element col0 field9" tabindex="1" ></div>
+                    </div>
+        
+                    <div id="col1">
+                        <div class="element col1 field0" tabindex="1" ></div>
+                        <div class="element col1 field1" tabindex="1" ></div>
+                        <div class="element col1 field2" tabindex="1" ></div>
+                        <div class="element col1 field3" tabindex="1" ></div>
+                        <div class="element col1 field4" tabindex="1" ></div>
+                        <div class="element col1 field5" tabindex="1" ></div>
+                        <div class="element col1 field6" tabindex="1" ></div>
+                        <div class="element col1 field7" tabindex="1" ></div>
+                        <div class="element col1 field8" tabindex="1" ></div>
+                        <div class="element col1 field9" tabindex="1" ></div>
+                    </div>
+
+                    <div id="col2">
+                        <div class="element col2 field0" tabindex="1" ></div>
+                        <div class="element col2 field1" tabindex="1" ></div>
+                        <div class="element col2 field2" tabindex="1" ></div>
+                        <div class="element col2 field3" tabindex="1" ></div>
+                        <div class="element col2 field4" tabindex="1" ></div>
+                        <div class="element col2 field5" tabindex="1" ></div>
+                        <div class="element col2 field6" tabindex="1" ></div>
+                        <div class="element col2 field7" tabindex="1" ></div>
+                        <div class="element col2 field8" tabindex="1" ></div>
+                        <div class="element col2 field9" tabindex="1" ></div>
+                    </div>
+
+                    <div id="col3">
+                        <div class="element col3 field0" tabindex="1" ></div>
+                        <div class="element col3 field1" tabindex="1" ></div>
+                        <div class="element col3 field2" tabindex="1" ></div>
+                        <div class="element col3 field3" tabindex="1" ></div>
+                        <div class="element col3 field4" tabindex="1" ></div>
+                        <div class="element col3 field5" tabindex="1" ></div>
+                        <div class="element col3 field6" tabindex="1" ></div>
+                        <div class="element col3 field7" tabindex="1" ></div>
+                        <div class="element col3 field8" tabindex="1" ></div>
+                        <div class="element col3 field9" tabindex="1" ></div>
+                    </div>
+                    
+                    <div id="col4">
+                        <div class="element col4 field0" tabindex="1" ></div>
+                        <div class="element col4 field1" tabindex="1" ></div>
+                        <div class="element col4 field2" tabindex="1" ></div>
+                        <div class="element col4 field3" tabindex="1" ></div>
+                        <div class="element col4 field4" tabindex="1" ></div>
+                        <div class="element col4 field5" tabindex="1" ></div>
+                        <div class="element col4 field6" tabindex="1" ></div>
+                        <div class="element col4 field7" tabindex="1" ></div>
+                        <div class="element col4 field8" tabindex="1" ></div>
+                        <div class="element col4 field9" tabindex="1" ></div>
+                    </div>
+                    
+                    <div id="col5">
+                        <div class="element col5 field0" tabindex="1" ></div>
+                        <div class="element col5 field1" tabindex="1" ></div>
+                        <div class="element col5 field2" tabindex="1" ></div>
+                        <div class="element col5 field3" tabindex="1" ></div>
+                        <div class="element col5 field4" tabindex="1" ></div>
+                        <div class="element col5 field5" tabindex="1" ></div>
+                        <div class="element col5 field6" tabindex="1" ></div>
+                        <div class="element col5 field7" tabindex="1" ></div>
+                        <div class="element col5 field8" tabindex="1" ></div>
+                        <div class="element col5 field9" tabindex="1" ></div>
+                    </div>
+                    
+                    <div id="col6">
+                        <div class="element col6 field0" tabindex="1" ></div>
+                        <div class="element col6 field1" tabindex="1" ></div>
+                        <div class="element col6 field2" tabindex="1" ></div>
+                        <div class="element col6 field3" tabindex="1" ></div>
+                        <div class="element col6 field4" tabindex="1" ></div>
+                        <div class="element col6 field5" tabindex="1" ></div>
+                        <div class="element col6 field6" tabindex="1" ></div>
+                        <div class="element col6 field7" tabindex="1" ></div>
+                        <div class="element col6 field8" tabindex="1" ></div>
+                        <div class="element col6 field9" tabindex="1" ></div>
+                    </div>
+                    
+                    <div id="col7">
+                        <div class="element col7 field0" tabindex="1" ></div>
+                        <div class="element col7 field1" tabindex="1" ></div>
+                        <div class="element col7 field2" tabindex="1" ></div>
+                        <div class="element col7 field3" tabindex="1" ></div>
+                        <div class="element col7 field4" tabindex="1" ></div>
+                        <div class="element col7 field5" tabindex="1" ></div>
+                        <div class="element col7 field6" tabindex="1" ></div>
+                        <div class="element col7 field7" tabindex="1" ></div>
+                        <div class="element col7 field8" tabindex="1" ></div>
+                        <div class="element col7 field9" tabindex="1" ></div>
+                    </div>
+                    
+                    <div id="col8">
+                        <div class="element col8 field0" tabindex="1" ></div>
+                        <div class="element col8 field1" tabindex="1" ></div>
+                        <div class="element col8 field2" tabindex="1" ></div>
+                        <div class="element col8 field3" tabindex="1" ></div>
+                        <div class="element col8 field4" tabindex="1" ></div>
+                        <div class="element col8 field5" tabindex="1" ></div>
+                        <div class="element col8 field6" tabindex="1" ></div>
+                        <div class="element col8 field7" tabindex="1" ></div>
+                        <div class="element col8 field8" tabindex="1" ></div>
+                        <div class="element col8 field9" tabindex="1" ></div>
+                    </div>
+                    
+                    <div id="col9">
+                        <div class="element col9 field0" tabindex="1" ></div>
+                        <div class="element col9 field1" tabindex="1" ></div>
+                        <div class="element col9 field2" tabindex="1" ></div>
+                        <div class="element col9 field3" tabindex="1" ></div>
+                        <div class="element col9 field4" tabindex="1" ></div>
+                        <div class="element col9 field5" tabindex="1" ></div>
+                        <div class="element col9 field6" tabindex="1" ></div>
+                        <div class="element col9 field7" tabindex="1" ></div>
+                        <div class="element col9 field8" tabindex="1" ></div>
+                        <div class="element col9 field9" tabindex="1" ></div>
+                    </div>
+                </div>
+                
+        </div>
+
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,166 @@
+/* REMOVE DEFAULT BUTTON*/
+button {
+    background: transparent;
+    box-shadow: 0px 0px 0px transparent;
+    border: 0px solid transparent;
+    text-shadow: 0px 0px 0px transparent;
+  }
+  
+  button:hover {
+    background: transparent;
+    box-shadow: 0px 0px 0px transparent;
+    border: 0px solid transparent;
+    text-shadow: 0px 0px 0px transparent;
+  }
+  
+  button:active {
+    outline: none;
+    border: none;
+  }
+  
+button:focus {
+    outline: 0;
+    background: transparent;
+}
+
+:focus {outline:none;}
+/*REMOVE DEFAULT END*/
+
+h1{
+    border-bottom: solid black 5px;
+}
+
+/*MAIN GRID*/
+.grid{
+    min-width: 500px;
+    min-height: 500px;;
+    display: grid;
+    grid-template-columns: auto auto auto auto auto auto auto auto auto auto;
+    grid-gap: 5px;
+    background-color: lightgray;
+    padding: 10px;
+    border-radius: 20px;
+    border: black solid 2px;
+}
+.element{
+    min-width: 40px;
+    min-height: 40px;
+    display: block;
+    box-sizing: border-box;
+    border-radius: 5px;
+    background-color: white;
+    height: 75px;
+    padding: 5px;
+    font-size: 30px;
+    margin-bottom: 5px;
+    border: white solid 1px;
+}
+.element:hover{
+    box-shadow: inset darkgray 0 0 5px;
+}
+.element:focus{
+    box-shadow: inset rgba(55, 88, 177, 0.74) 0 0 5px;
+}
+/* MAIN GRID END*/
+
+
+/*TOOLBAR*/
+.toolbar{
+    display: flex;
+    margin-bottom: 0;
+    flex-wrap: wrap;
+}
+.toolbar > li{
+    display:block;
+    box-sizing: border-box;
+    flex: content;
+    padding: 0px 0px 0px 0px;
+    background-color: rgba(100,100,100,0.3);
+    margin: 0px 20px;
+    border:black solid 2px;
+    border-bottom: none;
+    border-radius: 10px 10px 0px 0px;
+}
+
+.toolbar > li:hover{
+    background-color:  rgba(100,100,100,0.4);
+    align-content: space-between;
+}
+
+.toolbar li.selected{
+    background-color:black;
+}
+.toolbar li.selected > .button{ 
+    color:white;
+}
+
+
+/* DROPDOWN MENU*/
+.menu{
+    position: relative;
+    display: inline-block;
+    min-width: 50px;
+}
+.dropdown {
+    box-sizing: border-box;
+    width: 50px;
+    display: none;
+    position: absolute;
+    background-color: rgb(218, 218, 218);
+    border: solid black 2px;
+    border-radius: 0px 0px 10px 0px;
+}
+
+.dropdown li:hover{
+    background-color: rgb(196, 196, 196); ;
+}
+
+.menu:hover .dropdown{
+    display: block;
+}
+
+/* DROPDOWN END 
+    TOOLBAR END*/
+
+
+/* TURN ORDER LIST*/
+
+.initiative{
+    display: block;
+    float: left;
+    box-sizing: border-box;
+    width: 12%;
+    min-height: 200px;
+    background-color: lightgray;
+    border: solid black 2px;
+    border-left: none;
+    border-radius: 0px 15px 15px 0px;
+
+}
+
+#newEntity{
+    width: 60%;
+    background-color: white;
+    border-radius: 5px;
+}
+#init{
+    text-align: center;
+    width: 20%;
+    min-width: 30px;
+    background-color: white;
+    border-radius: 5px;
+}
+
+/*MAP SAVE LIST*/
+
+.maplist{
+    display: block;
+    float: right;
+    box-sizing: border-box;
+    width: 12%;
+    min-height: 200px;
+    background-color: lightgray;
+    border: solid black 2px;
+    border-right: none;
+    border-radius:  15px 0px 0px 15px;
+}
