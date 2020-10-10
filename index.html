@@ -14,12 +14,18 @@
     <h1>Battle-Map</h1>
 
     <!--INITIATIVE ORDER-->
-    <form class="initiative">
-        <p>Turn Order</p>
-        <label for="newEntity">New Entity and Initiative:</label>
-        <input type="text" id="newEntity" name="newEntity">
-        <input type="number" id="init" name="init">
-    </form>
+    <div class="initiative">
+        <form class="init-input">
+            <h5>Turn Order</h5>
+            <input placeholder="Entity" type="text" id="newEntity" name="newEntity">
+            <input placeholder="Init" type="number" id="init">
+        </form>
+        <div class="action-card">
+            <ul class="collection">
+
+            </ul>
+        </div>
+    </div>
     
     <!--STORAGE-->
     <div class="maplist">
