@@ -36,8 +36,9 @@ h1{
     }
 
     .grid{
-        min-width: 500px;
-        min-height: 500px;;
+        overflow: hidden;
+        min-width: 80%;
+        min-height: auto;
         display: grid;
         grid-template-columns: auto auto auto auto auto auto auto auto auto auto;
         grid-gap: 5px;
@@ -46,21 +47,28 @@ h1{
         border-radius: 20px;
         border: black solid 2px;
     }
+    
     .element{
-        min-width: 40px;
-        min-height: 40px;
-        display: block;
-        box-sizing: border-box;
+        overflow: hidden;
         border-radius: 5px;
         background-color: white;
-        height: 75px;
-        padding: 5px;
-        font-size: 30px;
-        margin-bottom: 5px;
         border: white solid 1px;
         position: relative;
         z-index: 1;
+        text-align: center;
+        padding: 5px;
+        margin-bottom: 5px;
     }
+    .grid > div > .element:before{
+        content: "";
+        display: block;
+        padding-bottom: 100%;
+        max-width: 100px;
+        max-height: 100px;
+        font-size: 30px;
+        box-sizing: border-box;
+    }
+
     .element:hover{
         box-shadow: inset darkgray 0 0 5px;
     }
@@ -73,30 +81,46 @@ h1{
         box-sizing: border-box;
         position: absolute;
         background-color: darkslategray;
-        height: 12px;
-        border-radius: 3px;
-        width: 12px;
+        height: 15px;
+        border-radius: 7px;
+        width: 15px;
+        z-index: 3;
     }
-
     .element > .moveButton.up{
-        left: 45%;
+        left: 50%;
+        transform: translate(-50%, 0);
         top: 5%;
     }
     .element > .moveButton.right{
-        top: 45%;
+        top: 50%;
+        transform: translate(0, -50%);
         right: 5%;
     }
     .element > .moveButton.down{
-        left: 45%;
+        left: 50%;
+        transform: translate(-50%, 0);
         bottom: 5%;
     }
     .element > .moveButton.left{
+        top: 50%;
+        transform: translate(0, -50%);
         left: 5%;
-        top: 45%;
     }
-
     .element > .moveButton:hover{
         background-color: lightblue;
+    }
+
+    .element > .display{
+        font-size: 200%;
+        height: 30px;
+        width: 30px;
+        background-color: lightgray;
+        border-radius: 15px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -150%);
+        z-index: 2;
     }
 /* =============================================================================================================
 MAIN GRID END*/
@@ -198,6 +222,7 @@ TURN ORDER LIST*/
         box-sizing: border-box;
         margin-left: 20px;
         width: 80%;
+        margin-bottom: 5px;
         text-align: center;
         background-color: white;
         border-radius: 5px;

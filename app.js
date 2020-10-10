@@ -8,7 +8,7 @@ const newObjectBtn = document.getElementById("object");
 const deleteBtn = document.getElementById("delete");
 const saveMapBtn = document.getElementById("save");
 const clearBtn = document.getElementById("clear");
-
+const elements = document.querySelectorAll(".element");
 
 let tool = "";
 
@@ -16,7 +16,7 @@ var row = 0;
 var col = 0;
 
   //CREATE VIRTUAL ARRAY
-var grid = new Array(10);
+grid = new Array(10);
 
 for (var i = 0; i < grid.length; i++) { 
     grid[i] = new Array(10); 
@@ -29,9 +29,10 @@ for (var i = 0; i < 10; i++) {
 } 
 
 
+
 //FUNCTIONS
 
-//update grid from array
+//update grid from array AND HANDLE MOVEMENT
 function gridLoad(){
     grid.forEach( line => {
         line.forEach(tile =>{
@@ -42,21 +43,27 @@ function gridLoad(){
 
             }else if(tile.content instanceof Ally){
                 tile.field.style.color = "green";
-                tile.field.textContent = `${tile.content.name.slice(0,1)}${tile.content.name.slice(-1)}`;
-                tile.buttons = new moveButtons();
+
+                tile.buttons = new MoveButtons();
                 tile.field.appendChild(tile.buttons.up);
                 tile.field.appendChild(tile.buttons.right);
                 tile.field.appendChild(tile.buttons.down);
                 tile.field.appendChild(tile.buttons.left);
 
+                tile.display = new Display(`${tile.content.name.slice(0,1)}${tile.content.name.slice(-1)}`);
+                tile.field.appendChild(tile.display.item);
+
             }else if(tile.content instanceof Enemy){
                 tile.field.style.color = "red";
-                tile.field.textContent = `${tile.content.name.slice(0,1)}${tile.content.name.slice(-1)}`;
-                tile.buttons = new moveButtons();
+                tile.buttons = new MoveButtons();
+
                 tile.field.appendChild(tile.buttons.up);
                 tile.field.appendChild(tile.buttons.right);
                 tile.field.appendChild(tile.buttons.down);
                 tile.field.appendChild(tile.buttons.left);
+
+                tile.display = new Display(`${tile.content.name.slice(0,1)}${tile.content.name.slice(-1)}`);
+                tile.field.appendChild(tile.display.item);
 
             }else{
                     tile.field.style.color = "black";
@@ -66,7 +73,7 @@ function gridLoad(){
         });
     });
     
-
+    sortInit();
     //BUTTON MOVE HANDLING
     const moveBtns = document.querySelectorAll(".moveButton");
 
@@ -162,6 +169,17 @@ function gridLoad(){
     }
 }
 
+function sortInit(){
+    var div = document.querySelector('.collection'),
+        para = document.querySelectorAll('list-item');
+    var paraArr = [].slice.call(para).sort(function (a, b) {
+        return a.textContent > b.textContent ? 1 : -1;
+    });
+    paraArr.forEach(function (p) {
+        div.appendChild(p);
+    });
+}
+
 //delete content by grid coordinate
 function contentDelete(line,tile){
     if (grid[line][tile].content != undefined){
@@ -232,6 +250,10 @@ function Enemy(name,init){
     this.item.className = "list-item";
     this.item.appendChild(document.createTextNode(`${name} \n init: ${init}`));
     document.querySelector(".collection").appendChild(this.item);
+
+    entityInit.value = "";
+    entityName.value = "";
+    
 }
 
 function Ally(name,init){
@@ -243,10 +265,13 @@ function Ally(name,init){
         this.item.className = "list-item";
         this.item.appendChild(document.createTextNode(`${name}\n init: ${init}`));
         document.querySelector(".collection").appendChild(this.item);
+
+    entityInit.value = "";
+    entityName.value = "";
     
 }
 
-function moveButtons(){
+function MoveButtons(){
     this.up = document.createElement("div");
     this.up.className = "moveButton up";
 
@@ -258,6 +283,12 @@ function moveButtons(){
 
     this.left = document.createElement("div");
     this.left.className = "moveButton left";
+}
+
+function Display(text){
+    this.item = document.createElement("p");
+    this.item.className = "display"; 
+    this.item.textContent = text;
 }
 
 
@@ -292,6 +323,11 @@ grid.forEach( line => {
                         tile.content = new Enemy(entityName.value,entityInit.value);
                     }
                     gridLoad();
+                    tool = "";
+                    buttonSelect();
+                    
+                      entityName.textContent = "";
+                      entityInit.textContent = "";
                 break;
     
                 case "ally":
@@ -308,6 +344,11 @@ grid.forEach( line => {
                         tile.content = new Ally(entityName.value,entityInit.value);
                     }
                     gridLoad();
+                    tool = "";
+                    buttonSelect();
+                    entityName.textContent = "";
+                    entityInit.textContent = "";
+
                 break;
     
                 case "object":
