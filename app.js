@@ -42,7 +42,7 @@ function gridLoad(){
                 tile.buttons = undefined;
 
             }else if(tile.content instanceof Ally){
-                tile.field.style.color = "green";
+                tile.field.style.color = "white";
 
                 tile.buttons = new MoveButtons();
                 tile.field.appendChild(tile.buttons.up);
@@ -52,9 +52,10 @@ function gridLoad(){
 
                 tile.display = new Display(`${tile.content.name.slice(0,1)}${tile.content.name.slice(-1)}`);
                 tile.field.appendChild(tile.display.item);
+                tile.display.item.style.background = "green";
 
             }else if(tile.content instanceof Enemy){
-                tile.field.style.color = "red";
+                tile.field.style.color = "white";
                 tile.buttons = new MoveButtons();
 
                 tile.field.appendChild(tile.buttons.up);
@@ -64,6 +65,7 @@ function gridLoad(){
 
                 tile.display = new Display(`${tile.content.name.slice(0,1)}${tile.content.name.slice(-1)}`);
                 tile.field.appendChild(tile.display.item);
+                tile.display.item.style.background = "red";
 
             }else{
                     tile.field.style.color = "black";
@@ -170,14 +172,25 @@ function gridLoad(){
 }
 
 function sortInit(){
-    var div = document.querySelector('.collection'),
-        para = document.querySelectorAll('list-item');
-    var paraArr = [].slice.call(para).sort(function (a, b) {
-        return a.textContent > b.textContent ? 1 : -1;
+        var list = document.querySelector('.collection');
+
+    var items = list.childNodes;
+    var itemsArr = [];
+    for (var i in items) {
+        if (items[i].nodeType == 1) { // get rid of the whitespace text nodes
+            itemsArr.push(items[i]);
+        }
+    }
+
+    itemsArr.sort(function(a, b) {
+    return a.innerHTML == b.innerHTML
+            ? 0
+            : (a.innerHTML.slice(-2,-1) > b.innerHTML.slice(-2,-1) ? -1 : 1);
     });
-    paraArr.forEach(function (p) {
-        div.appendChild(p);
-    });
+
+    for (i = 0; i < itemsArr.length; ++i) {
+    list.appendChild(itemsArr[i]);
+}
 }
 
 //delete content by grid coordinate
