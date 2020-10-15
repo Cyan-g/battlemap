@@ -8,34 +8,62 @@ const newObjectBtn = document.getElementById("object");
 const deleteBtn = document.getElementById("delete");
 const saveMapBtn = document.getElementById("save");
 const clearBtn = document.getElementById("clear");
-const elements = document.querySelectorAll(".element");
+const UiGrid = document.querySelector(".grid");
+
 
 let tool = "";
 
 var row = 0;
 var col = 0;
+var numberPattern = /\d+/g;
+var template = "";
 
-  //CREATE VIRTUAL ARRAY
-grid = new Array(10);
-
-for (var i = 0; i < grid.length; i++) { 
-    grid[i] = new Array(10); 
-} 
-  
-for (var i = 0; i < 10; i++) { 
-    for (var j = 0; j < 10; j++) { 
-        grid[i][j] = new Field(i,j,undefined);
-    } 
-} 
-
+gridGenerate(15,15);
 
 
 //FUNCTIONS
+function gridGenerate(cols,rows){
+
+    grid = new Array(cols);
+
+    //PREPARE EMPTY ARRAY
+    for (var i = 0; i < cols; i++) { 
+        grid[i] = new Array(rows);
+    } 
+
+    //GENERATE UI ELEMENTS IN HTML DOM 
+    col = 0;
+    console.log(grid);
+
+
+    grid.forEach(column =>{
+
+        template += " auto";
+        let newCol = document.createElement("div");
+        newCol.className = `col${col}`;
+        UiGrid.appendChild(newCol);
+        
+        
+        for (row = 0; row <= rows-1; row++){
+            let newField = document.createElement("div");
+            newField.className = `element col${col} field${row}`;
+            newField.tabIndex = "1";
+            newCol.appendChild(newField);
+            grid[col][row] = new Field(row,col,undefined);
+        }
+
+        col++;
+    })
+
+    const elements = document.querySelectorAll(".element");
+    UiGrid.style.gridTemplateColumns = template;
+    gridLoad();
+}
 
 //update grid from array AND HANDLE MOVEMENT
 function gridLoad(){
-    grid.forEach( line => {
-        line.forEach(tile =>{
+    grid.forEach( column => {
+        column.forEach(tile =>{
             if (tile.content instanceof UIObject){
                 tile.field.style.background = "black";
                 tile.field.textContent = "";
@@ -83,22 +111,22 @@ function gridLoad(){
         moveBtns.forEach(movebtn =>{
             movebtn.addEventListener("click",function(e){
 
-                row = parseInt(e.target.parentNode.className.slice(-1));
-                col = parseInt(e.target.parentNode.className.slice(11,12));
+                row = parseInt(e.target.parentNode.className.match(numberPattern)[0]);
+                col = parseInt(e.target.parentNode.className.match(numberPattern)[1]);
                 let currentField = grid[row][col].content;
                 
                 //UP
                 if(e.target.classList.contains("up")){
-                    if(row==0){
+                    if(col==0){
                         alert("Can't move there");
                         return;
                     }
 
-                    let targetField = grid[row-1][col].content;
+                    let targetField = grid[row][col-1].content;
 
                     if (targetField === undefined){
                         let buffer = targetField;
-                        grid[row-1][col].content = currentField;
+                        grid[row][col-1].content = currentField;
                         grid[row][col].content = targetField;
                         
                     }else{
@@ -108,27 +136,7 @@ function gridLoad(){
 
                 //RIGHT
                 if(e.target.classList.contains("right")){
-                     if(col==9){
-                        alert("Can't move there");
-                        return;
-                    }
-
-                    let targetField = grid[row][col+1].content;
-                    
-                    if (targetField === undefined){
-                        let buffer = targetField;
-                        grid[row][col+1].content = currentField;
-                        grid[row][col].content = targetField;
-                        
-                    }else{
-                        alert("Can't move there");
-                    }
-                    
-                }
-
-                //DOWN
-                if(e.target.classList.contains("down")){
-                    if(row==9){
+                     if(row==grid.length){
                         alert("Can't move there");
                         return;
                     }
@@ -146,18 +154,38 @@ function gridLoad(){
                     
                 }
 
-                //LEFT
-                if(e.target.classList.contains("left")){
-                    if(col==0){
+                //DOWN
+                if(e.target.classList.contains("down")){
+                    if(col==grid[0].length){
                         alert("Can't move there");
                         return;
                     }
 
-                    let targetField = grid[row][col-1].content;
+                    let targetField = grid[row][col+1].content;
                     
                     if (targetField === undefined){
                         let buffer = targetField;
-                        grid[row][col-1].content = currentField;
+                        grid[row][col+1].content = currentField;
+                        grid[row][col].content = targetField;
+                        
+                    }else{
+                        alert("Can't move there");
+                    }
+                    
+                }
+
+                //LEFT
+                if(e.target.classList.contains("left")){
+                    if(row==0){
+                        alert("Can't move there");
+                        return;
+                    }
+
+                    let targetField = grid[row-1][col].content;
+                    
+                    if (targetField === undefined){
+                        let buffer = targetField;
+                        grid[row-1][col].content = currentField;
                         grid[row][col].content = targetField;
                         
                     }else{
@@ -194,12 +222,12 @@ function sortInit(){
 }
 
 //delete content by grid coordinate
-function contentDelete(line,tile){
-    if (grid[line][tile].content != undefined){
-        if (grid[line][tile].content.item != undefined){
-        grid[line][tile].content.item.remove();
+function contentDelete(column,tile){
+    if (grid[column][tile].content != undefined){
+        if (grid[column][tile].content.item != undefined){
+        grid[column][tile].content.item.remove();
         }
-    grid[line][tile].content = undefined;
+    grid[column][tile].content = undefined;
     }
 
     gridLoad();
@@ -208,10 +236,10 @@ function contentDelete(line,tile){
 //check for unique EntityName
 function checkUnique(name){
     let unique = true;
-    grid.forEach( line => {
-        line.forEach( tile =>{
-            row = grid.indexOf(line);
-            col = line.indexOf(tile);
+    grid.forEach( column => {
+        column.forEach( tile =>{
+            row = grid.indexOf(column);
+            col = column.indexOf(tile);
             if (grid[row][col].content != undefined){
                 if (grid[row][col].content.name != undefined){
                     if ((grid[row][col].content.name) === name){
@@ -245,7 +273,7 @@ function buttonSelect(){
 
 // CONSTRUCTORS
 function Field(row,col,content){
-    this.field = document.querySelector(`.field${i}.col${j}`);
+    this.field = document.querySelector(`.field${row}.col${col}`);
     this.content = content;
     this.buttons = undefined;
 }
@@ -307,12 +335,12 @@ function Display(text){
 
 
 // INTERACTION HANDLER
-grid.forEach( line => {
-    line.forEach( tile =>{
+grid.forEach( column => {
+    column.forEach( tile =>{
         tile.field.addEventListener("click",function(ev){
             gridLoad();
-            row = grid.indexOf(line);
-            col = line.indexOf(tile);
+            row = grid.indexOf(column);
+            col = column.indexOf(tile);
             
             switch(tool) {
 
@@ -332,7 +360,7 @@ grid.forEach( line => {
                     }
 
                     if (checkUnique(entityName.value)){
-                        contentDelete(grid.indexOf(line),line.indexOf(tile));
+                        contentDelete(grid.indexOf(column),column.indexOf(tile));
                         tile.content = new Enemy(entityName.value,entityInit.value);
                     }
                     gridLoad();
@@ -353,7 +381,7 @@ grid.forEach( line => {
                         break;
                     }
                     if (checkUnique(entityName.value)){
-                        contentDelete(grid.indexOf(line),line.indexOf(tile));
+                        contentDelete(grid.indexOf(column),column.indexOf(tile));
                         tile.content = new Ally(entityName.value,entityInit.value);
                     }
                     gridLoad();
@@ -365,7 +393,7 @@ grid.forEach( line => {
                 break;
     
                 case "object":
-                    contentDelete(grid.indexOf(line),line.indexOf(tile));
+                    contentDelete(grid.indexOf(column),column.indexOf(tile));
                     tile.content = new UIObject();
                     gridLoad();
                 break;
@@ -418,9 +446,9 @@ function loadEventListeners(){
     clearBtn.addEventListener("click",function(){
         tool = "";
         buttonSelect();
-        grid.forEach( line => {
-            line.forEach( tile =>{
-                contentDelete(grid.indexOf(line),line.indexOf(tile));
+        grid.forEach( column => {
+            column.forEach( tile =>{
+                contentDelete(grid.indexOf(column),column.indexOf(tile));
         })})
         gridLoad();
     });
