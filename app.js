@@ -372,6 +372,7 @@ function interactionEvent(column,tile){
                 if (checkUnique(entityName.value)){
                     contentDelete(grid.indexOf(column),column.indexOf(tile));
                     tile.content = new Enemy(entityName.value,entityInit.value);
+                    sortInit();
                 }
                 tool = "";
                 buttonSelect();
@@ -392,6 +393,7 @@ function interactionEvent(column,tile){
                 if (checkUnique(entityName.value)){
                     contentDelete(grid.indexOf(column),column.indexOf(tile));
                     tile.content = new Ally(entityName.value,entityInit.value);
+                    sortInit();
                 }
                 tool = "";
                 buttonSelect();
