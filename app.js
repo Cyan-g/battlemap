@@ -9,6 +9,12 @@ const deleteBtn = document.getElementById("delete");
 const saveMapBtn = document.getElementById("save");
 const clearBtn = document.getElementById("clear");
 const UiGrid = document.querySelector(".grid");
+const UIbody = document.querySelector("body");
+
+const addRow = document.getElementById("row+");
+const delRow = document.getElementById("row-");
+const addCol = document.getElementById("col+");
+const delCol = document.getElementById("col-");
 
 
 let tool = "";
@@ -17,12 +23,15 @@ var row = 0;
 var col = 0;
 var numberPattern = /\d+/g;
 var template = "";
+var width = 0;
+var cols = 10;
+var rows = 10;
 
-gridGenerate(15,15);
+gridGenerate();
 
 
 //FUNCTIONS
-function gridGenerate(cols,rows){
+function gridGenerate(){
 
     grid = new Array(cols);
 
@@ -39,6 +48,7 @@ function gridGenerate(cols,rows){
     grid.forEach(column =>{
 
         template += " auto";
+        width += 70;
         let newCol = document.createElement("div");
         newCol.className = `col${col}`;
         UiGrid.appendChild(newCol);
@@ -56,12 +66,13 @@ function gridGenerate(cols,rows){
     })
 
     const elements = document.querySelectorAll(".element");
-    UiGrid.style.gridTemplateColumns = template;
     gridLoad();
 }
 
 //update grid from array AND HANDLE MOVEMENT
 function gridLoad(){
+    rows= grid[0].length;
+    cols= grid.length;
     grid.forEach( column => {
         column.forEach(tile =>{
             if (tile.content instanceof UIObject){
@@ -71,6 +82,7 @@ function gridLoad(){
 
             }else if(tile.content instanceof Ally){
                 tile.field.style.color = "white";
+                tile.field.style.background = "white";
 
                 tile.buttons = new MoveButtons();
                 tile.field.appendChild(tile.buttons.up);
@@ -84,6 +96,7 @@ function gridLoad(){
 
             }else if(tile.content instanceof Enemy){
                 tile.field.style.color = "white";
+                tile.field.style.background = "white";
                 tile.buttons = new MoveButtons();
 
                 tile.field.appendChild(tile.buttons.up);
@@ -103,6 +116,10 @@ function gridLoad(){
         });
     });
     
+    //ADJUST UI CHANGES
+    UiGrid.style.gridTemplateColumns = template;
+    UiGrid.style.minWidth = `${width}px`;
+    UIbody.style.minWidth = `${width * 1.4}px`;
     sortInit();
     //BUTTON MOVE HANDLING
     const moveBtns = document.querySelectorAll(".moveButton");
@@ -229,8 +246,6 @@ function contentDelete(column,tile){
         }
     grid[column][tile].content = undefined;
     }
-
-    gridLoad();
 }
 
 //check for unique EntityName
@@ -263,9 +278,9 @@ function buttonSelect(){
  
     toolbar.forEach(currentBtn =>{
         
-        currentBtn.parentNode.classList.remove("selected");
+        currentBtn.classList.remove("selected");
         if (currentBtn.id === `${tool}`){
-            currentBtn.parentNode.classList.add("selected");
+            currentBtn.classList.add("selected");
         }
     });
 }
@@ -335,83 +350,83 @@ function Display(text){
 
 
 // INTERACTION HANDLER
-grid.forEach( column => {
-    column.forEach( tile =>{
-        tile.field.addEventListener("click",function(ev){
-            gridLoad();
-            row = grid.indexOf(column);
-            col = column.indexOf(tile);
-            
-            switch(tool) {
+function interactionEvent(column,tile){
+    tile.field.addEventListener("click",function(){
+        gridLoad();
+        switch(tool) {
 
-                case "delete":
-                    contentDelete(row,col);
-                    gridLoad();
-                break;
+            case "delete":
+                contentDelete(grid.indexOf(column),column.indexOf(tile));
+            break;
     
-                case "enemy":
-                     if(entityInit.value === undefined || entityName.value === ""){
-                        alert("Enter Entity Data");
-                        break;
-                    }
-                    if(parseInt(entityInit.value) < 1){
-                        alert("Initiative needs to be bigger than 0")
-                        break;
-                    }
-
-                    if (checkUnique(entityName.value)){
-                        contentDelete(grid.indexOf(column),column.indexOf(tile));
-                        tile.content = new Enemy(entityName.value,entityInit.value);
-                    }
-                    gridLoad();
-                    tool = "";
-                    buttonSelect();
-                    
-                      entityName.textContent = "";
-                      entityInit.textContent = "";
-                break;
+            case "enemy":
+                 if(entityInit.value === undefined || entityName.value === ""){
+                    alert("Enter Entity Data");
+                    break;
+                }
+                if(parseInt(entityInit.value) < 1){
+                    alert("Initiative needs to be bigger than 0")
+                    break;
+                }
     
-                case "ally":
-                    if(entityInit.value === undefined || entityName.value === ""){
-                        alert("Enter Entity Data");
-                        break;
-                    }
-                    if(parseInt(entityInit.value) < 1){
-                        alert("Initiative needs to be bigger than 0")
-                        break;
-                    }
-                    if (checkUnique(entityName.value)){
-                        contentDelete(grid.indexOf(column),column.indexOf(tile));
-                        tile.content = new Ally(entityName.value,entityInit.value);
-                    }
-                    gridLoad();
-                    tool = "";
-                    buttonSelect();
-                    entityName.textContent = "";
-                    entityInit.textContent = "";
-
-                break;
-    
-                case "object":
+                if (checkUnique(entityName.value)){
                     contentDelete(grid.indexOf(column),column.indexOf(tile));
-                    tile.content = new UIObject();
-                    gridLoad();
-                break;
+                    tile.content = new Enemy(entityName.value,entityInit.value);
+                }
+                tool = "";
+                buttonSelect();
+                
+                  entityName.textContent = "";
+                  entityInit.textContent = "";
+            break;
     
-                default:
+            case "ally":
+                if(entityInit.value === undefined || entityName.value === ""){
+                    alert("Enter Entity Data");
+                    break;
+                }
+                if(parseInt(entityInit.value) < 1){
+                    alert("Initiative needs to be bigger than 0")
+                    break;
+                }
+                if (checkUnique(entityName.value)){
+                    contentDelete(grid.indexOf(column),column.indexOf(tile));
+                    tile.content = new Ally(entityName.value,entityInit.value);
+                }
+                tool = "";
+                buttonSelect();
+                entityName.textContent = "";
+                entityInit.textContent = "";
     
-                break;
-            }
-        })
+            break;
+    
+            case "object":
+                contentDelete(grid.indexOf(column),column.indexOf(tile));
+                tile.content = new UIObject();
+            break;
+    
+            default:
+    
+            break;
+        }
+        gridLoad();
     })
-})
+}
+
 
 // EVENT LISTENERS
 function loadEventListeners(){
 
+    //Field Click interaction events
+    grid.forEach( column => {
+        column.forEach( tile =>{
+            interactionEvent(column,tile);
+        })
+    })
+
     //TOOL DESELECTING BY CLICKING OUT
     document.querySelector("body").addEventListener("click",function(e){
-        if ((e.target.classList.contains("element") === false)&&(e.target.classList.contains("button") === false)){
+        if ((e.target.classList.contains("element") === false)&&(e.target.classList.contains("button") === false)&&(e.target.classList.contains("grid") === false)){
             tool = "";
             buttonSelect();
         }
@@ -452,6 +467,83 @@ function loadEventListeners(){
         })})
         gridLoad();
     });
+
+
+    // GRID RESIZING FUNCTIONS
+    addCol.addEventListener("click",function(){
+        
+        
+        grid.push(new Array(rows));
+        template += " auto";
+        width += 70;
+        let newCol = document.createElement("div");
+        newCol.className = `col${cols}`;
+        UiGrid.appendChild(newCol);
+
+        for (row = 0; row <= rows-1; row++){
+            let newField = document.createElement("div");
+            newField.className = `element col${cols} field${row}`;
+            newField.tabIndex = "1";
+            newCol.appendChild(newField);
+            grid[cols][row] = new Field(row,cols,undefined);
+            interactionEvent(grid[cols],grid[cols][row]);
+        }
+        cols++;
+        console.log(grid);
+        gridLoad();
+    })
+
+    delCol.addEventListener("click",function(){
+        if(cols == 1){
+            alert("There can't be less than 1 column");
+        }else{
+            
+        cols--;
+        for (row = 0; row <= rows-1; row++){
+            contentDelete(cols,row);
+        }
+        document.querySelector(`.col${cols}`).remove();
+        width -= 70;
+        template = template.slice(0,-5);
+        grid.pop();
+        console.log(grid);
+        gridLoad();
+        }
+        
+    })
+
+    addRow.addEventListener("click",function(){
+        
+        for(col=0;col <= cols-1 ;col++){
+
+            let newField = document.createElement("div");
+            newField.className = `element col${col} field${rows}`;
+            newField.tabIndex = "1";
+            document.querySelector(`.col${col}`).appendChild(newField);
+            grid[col].push(new Field(rows,col,undefined));
+            interactionEvent(grid[col],grid[col][rows]);
+        }
+        rows++;
+        gridLoad();
+        console.log(grid);
+    })
+
+    delRow.addEventListener("click",function(){
+        if (rows===1){
+            alert("There can't be less than 1 row!");
+        }else{
+            rows--;
+        console.log(rows);
+        for(col=0;col <= cols-1 ;col++){
+            contentDelete(col,rows);
+            document.querySelector(`.element.col${col}.field${rows}`).remove();
+            grid[col].pop();
+        }
+        gridLoad();
+        console.log(grid);
+        }
+        
+    })
 }
 
 loadEventListeners();

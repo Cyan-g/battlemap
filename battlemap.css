@@ -26,13 +26,21 @@
 :focus {outline:none;}
 /*REMOVE DEFAULT END*/
 
+body{
+    background-color: teal;
+}
+
 h1{
     border-bottom: solid black 5px;
+    margin: 0;
+    padding-top: 60px;
+    background-color: white;
 }
 /*===============================================================================================================
 /*MAIN GRID*/
-    body{
-        min-width: 1000px;
+
+    .container{
+        margin-top: 40px;
     }
 
     .grid{
@@ -86,22 +94,22 @@ h1{
     .element > .moveButton.up{
         left: 50%;
         transform: translate(-50%, 0);
-        top: 5%;
+        top: 1%;
     }
     .element > .moveButton.right{
         top: 50%;
         transform: translate(0, -50%);
-        right: 5%;
+        right: 1%;
     }
     .element > .moveButton.down{
         left: 50%;
         transform: translate(-50%, 0);
-        bottom: 5%;
+        bottom: 1%;
     }
     .element > .moveButton.left{
         top: 50%;
         transform: translate(0, -50%);
-        left: 5%;
+        left: 1%;
     }
     .element > .moveButton:hover{
         background-color: lightblue;
@@ -109,14 +117,14 @@ h1{
 
     .element > .display{
         font-size: 200%;
-        height: 60px;
-        width: 60px;
+        height: 56px;
+        width: 56px;
         background-color: lightgray;
-        border-radius: 30px;
+        border-radius: 28px;
         position: absolute;
         top: 50%;
         left: 50%;
-        transform: translate(-50%, -100%);
+        transform: translate(-50%, -104%);
         z-index: 2;
     }
 /* =============================================================================================================
@@ -130,28 +138,25 @@ TOOLBAR*/
         margin-bottom: 0;
         flex-wrap: wrap;
     }
-    .toolbar > li{
-        display:block;
+    .toolbar > .button{
+        flex: 1;
+        display: block;
         box-sizing: border-box;
-        flex: content;
         padding: 0px 0px 0px 0px;
-        background-color: rgba(100,100,100,0.3);
+        background-color: rgb(151, 151, 151);
         margin: 0px 20px;
         border:black solid 2px;
         border-bottom: none;
         border-radius: 10px 10px 0px 0px;
     }
 
-    .toolbar > li:hover{
-        background-color:  rgba(100,100,100,0.4);
-        align-content: space-between;
+    .toolbar > .button:hover{
+        background-color:  rgba(100,100,100,1);
     }
 
-    .toolbar li.selected{
+    .toolbar .button.selected{
         background-color:black;
-    }
-    .toolbar li.selected > .button{ 
-    color:white;
+        color: white;
 }
 
 /* ================================================================
@@ -163,7 +168,6 @@ DROPDOWN MENU*/
         }
         .dropdown {
             box-sizing: border-box;
-            width: 50px;
             display: none;
             position: absolute;
             background-color: rgb(218, 218, 218);
@@ -178,6 +182,8 @@ DROPDOWN MENU*/
 
         .menu:hover .dropdown{
             display: block;
+            border-bottom: black solid 1px;
+            overflow: hidden;
         }
 
 /* DROPDOWN END 
@@ -189,9 +195,15 @@ DROPDOWN MENU*/
 TURN ORDER LIST*/
 
     .initiative{
+        margin-top: 50px;
         display: block;
         float: left;
+        position: sticky;
+        left: 0;
+        top: 5%;
+        z-index: 5;
         box-sizing: border-box;
+        max-width: 300px;
         width: 12%;
         min-height: 200px;
         background-color: lightgray;
@@ -228,7 +240,7 @@ TURN ORDER LIST*/
 /*MAP SAVE LIST*/
 
     .maplist{
-        display: block;
+        display: none; /* <-----------REMOVE THIS !!!!!!!!!!!!!! -------->*/
         float: right;
         box-sizing: border-box;
         width: 12%;
