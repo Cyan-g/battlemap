@@ -1,3 +1,4 @@
+//INITIALIZE VARIABLES
 const entityName = document.querySelector("#newEntity");
 const entityInit = document.querySelector("#init");
 const clearInitBtn = document.querySelector("#init-clear");
@@ -31,6 +32,7 @@ var width = 70;
 var cols = 10;
 var rows = 10;
 
+var saves = [];
 var grid = new Array(1);
 grid[0] =  new Array(1);
 grid[0][0] = new Field(0,0,undefined);
@@ -271,6 +273,7 @@ function buttonSelect(){
     });
 }
 
+//GRID SIZING
 function addCol(){
     console.log("add col");
     grid.push(new Array(grid[0].length));
@@ -305,16 +308,15 @@ function delCol(){
 
 function addRow(){
     let col = 0;
+    console.log("add row");
     let row = grid[0].length;
     while (col < grid.length ){
-        console.log(col);
         let newField = document.createElement("div");
         newField.className = `element col${col} field${row}`;
         newField.tabIndex = "1";
         document.querySelector(`.col${col}`).appendChild(newField);
         grid[col].push(new Field(row,col,undefined));
         interactionEvent(grid[col],grid[col][row-1]);
-        console.log(document.querySelector(`.field${row}.col${col}`));
         col++;
     }
     
@@ -332,26 +334,41 @@ function delRow(){
 }
 
 
+//Save managing
+function loadSave(newGrid){
+    grid=newGrid;
+    gridLoad();
+}
+
+function getSaves(){
+
+}
+
+function removeSave(){
+
+}
+
 // CONSTRUCTORS
 
-class Store {
+function addSave(index){
+    if(mapName.value==""){
+        alert("Please enter a name for your map");
+    }else{
+        this.index = index;
+        this.name = index + ": " + mapName.value;
+        this.loadout = grid;
+        this.item = document.createElement("div");
+        this.item.className = `list-item save${index}` ;
 
-    static loadSave(){
+        this.item.addEventListener("click",function(e){
+            let Save = e.target.classList.match(numberPattern)[-1];
+            loadSave(saves[Save].loadout);
+        })
 
-    }
-
-    static getSave(){
-    }
-
-    static addSave(){
-
-       // this.name = mapName.value;
-       // this.loadout = grid;
-       // this.item = document.createElement("div");
-    }
-
-    static removeSave(){
-
+        this.item.appendChild(document.createTextNode(this.name));
+        document.querySelector(".maplist").appendChild(this.item);
+        mapName.value= "";
+        popup.style.display = "none";
     }
 }
 
@@ -547,7 +564,9 @@ function loadEventListeners(){
         popup.style.display = "none";
     })
 
-    mapSubmit.addEventListener("click",Store.addSave());
+    mapSubmit.addEventListener("click",function(){
+        saves.push(new addSave(saves.length));
+    });
 
     // GRID RESIZING FUNCTIONS
     addColBtn.addEventListener("click",function(){
