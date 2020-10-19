@@ -1,3 +1,4 @@
+//INITIALIZE VARIABLES
 const entityName = document.querySelector("#newEntity");
 const entityInit = document.querySelector("#init");
 const clearInitBtn = document.querySelector("#init-clear");
@@ -8,13 +9,17 @@ const newObjectBtn = document.getElementById("object");
 const deleteBtn = document.getElementById("delete");
 const saveMapBtn = document.getElementById("save");
 const clearBtn = document.getElementById("clear");
+const closePopup = document.getElementById("closePopup");
+const popup = document.querySelector(".popup");
+const mapName = document.querySelector("#newSave");
+const mapSubmit = document.querySelector("#submit-save");
+
 const UiGrid = document.querySelector(".grid");
 const UIbody = document.querySelector("body");
-
-const addRow = document.getElementById("row+");
-const delRow = document.getElementById("row-");
-const addCol = document.getElementById("col+");
-const delCol = document.getElementById("col-");
+const addRowBtn = document.getElementById("row+");
+const delRowBtn = document.getElementById("row-");
+const addColBtn = document.getElementById("col+");
+const delColBtn = document.getElementById("col-");
 
 
 let tool = "";
@@ -22,57 +27,40 @@ let tool = "";
 var row = 0;
 var col = 0;
 var numberPattern = /\d+/g;
-var template = "";
-var width = 0;
+var template = "auto";
+var width = 70;
 var cols = 10;
 var rows = 10;
 
-gridGenerate();
-
+var saves = [];
+var grid = new Array(1);
+grid[0] =  new Array(1);
+grid[0][0] = new Field(0,0,undefined);
+gridLoad();
 
 //FUNCTIONS
-function gridGenerate(){
-
-    grid = new Array(cols);
-
-    //PREPARE EMPTY ARRAY
-    for (var i = 0; i < cols; i++) { 
-        grid[i] = new Array(rows);
-    } 
-
-    //GENERATE UI ELEMENTS IN HTML DOM 
-    col = 0;
-    console.log(grid);
-
-
-    grid.forEach(column =>{
-
-        template += " auto";
-        width += 70;
-        let newCol = document.createElement("div");
-        newCol.className = `col${col}`;
-        UiGrid.appendChild(newCol);
-        
-        
-        for (row = 0; row <= rows-1; row++){
-            let newField = document.createElement("div");
-            newField.className = `element col${col} field${row}`;
-            newField.tabIndex = "1";
-            newCol.appendChild(newField);
-            grid[col][row] = new Field(row,col,undefined);
-        }
-
-        col++;
-    })
-
-    const elements = document.querySelectorAll(".element");
-    gridLoad();
-}
 
 //update grid from array AND HANDLE MOVEMENT
 function gridLoad(){
-    rows= grid[0].length;
-    cols= grid.length;
+    //FIX GRID SIZE
+
+    while (grid[0].length < rows){
+        addRow();
+    }
+
+    while (grid[0].length > rows){
+        delRow();
+    }
+
+    while (grid.length < cols){
+        addCol();
+    }
+    while (grid.length > cols){
+        delCol();
+    }
+
+    console.log(grid);
+
     grid.forEach( column => {
         column.forEach(tile =>{
             if (tile.content instanceof UIObject){
@@ -230,7 +218,7 @@ function sortInit(){
     itemsArr.sort(function(a, b) {
     return a.innerHTML == b.innerHTML
             ? 0
-            : (a.innerHTML.slice(-2,-1) > b.innerHTML.slice(-2,-1) ? -1 : 1);
+            : (a.innerHTML.match(numberPattern)[-1] > b.innerHTML.match(numberPattern)[-1] ? -1 : 1);
     });
 
     for (i = 0; i < itemsArr.length; ++i) {
@@ -285,8 +273,105 @@ function buttonSelect(){
     });
 }
 
+//GRID SIZING
+function addCol(){
+    console.log("add col");
+    grid.push(new Array(grid[0].length));
+    template += " auto";
+    width += 70;
+    let newCol = document.createElement("div");
+    newCol.className = `col${grid.length-1}`;
+    UiGrid.appendChild(newCol);
+
+        for (row = 0; row <= grid[0].length-1; row++){
+            let newField = document.createElement("div");
+            newField.className = `element col${grid.length-1} field${row}`;
+            newField.tabIndex = "1";
+            newCol.appendChild(newField);
+            grid[grid.length-1][row] = new Field(row,grid.length-1,undefined);
+            interactionEvent(grid[grid.length-1],grid[grid.length-1][row]);
+        }
+}
+
+function delCol(){
+    let row = 0;
+    while (row <= rows-1){
+        contentDelete(cols,row);
+        row++;
+    }
+    document.querySelector(`.col${cols+1}`).remove();
+    width -= 70;
+    template = template.slice(0,-5);
+    grid.pop();
+    console.log(grid);
+}
+
+function addRow(){
+    let col = 0;
+    console.log("add row");
+    let row = grid[0].length;
+    while (col < grid.length ){
+        let newField = document.createElement("div");
+        newField.className = `element col${col} field${row}`;
+        newField.tabIndex = "1";
+        document.querySelector(`.col${col}`).appendChild(newField);
+        grid[col].push(new Field(row,col,undefined));
+        interactionEvent(grid[col],grid[col][row-1]);
+        col++;
+    }
+    
+}
+
+function delRow(){
+    let col = 0;
+    while(col <= cols-1 ){
+        contentDelete(col,rows);
+        document.querySelector(`.element.col${col}.field${rows}`).remove();
+        grid[col].pop();
+        col++;
+    }
+    console.log(grid);
+}
+
+
+//Save managing
+function loadSave(newGrid){
+    grid=newGrid;
+    gridLoad();
+}
+
+function getSaves(){
+
+}
+
+function removeSave(){
+
+}
 
 // CONSTRUCTORS
+
+function addSave(index){
+    if(mapName.value==""){
+        alert("Please enter a name for your map");
+    }else{
+        this.index = index;
+        this.name = index + ": " + mapName.value;
+        this.loadout = grid;
+        this.item = document.createElement("div");
+        this.item.className = `list-item save${index}` ;
+
+        this.item.addEventListener("click",function(e){
+            let Save = e.target.classList.match(numberPattern)[-1];
+            loadSave(saves[Save].loadout);
+        })
+
+        this.item.appendChild(document.createTextNode(this.name));
+        document.querySelector(".maplist").appendChild(this.item);
+        mapName.value= "";
+        popup.style.display = "none";
+    }
+}
+
 function Field(row,col,content){
     this.field = document.querySelector(`.field${row}.col${col}`);
     this.content = content;
@@ -470,79 +555,48 @@ function loadEventListeners(){
         gridLoad();
     });
 
+    //MAP SAVE
+    saveMapBtn.addEventListener("click",function(){
+        popup.style.display = "block";
+    });
+
+    closePopup.addEventListener("click",function(){
+        popup.style.display = "none";
+    })
+
+    mapSubmit.addEventListener("click",function(){
+        saves.push(new addSave(saves.length));
+    });
 
     // GRID RESIZING FUNCTIONS
-    addCol.addEventListener("click",function(){
-        
-        
-        grid.push(new Array(rows));
-        template += " auto";
-        width += 70;
-        let newCol = document.createElement("div");
-        newCol.className = `col${cols}`;
-        UiGrid.appendChild(newCol);
-
-        for (row = 0; row <= rows-1; row++){
-            let newField = document.createElement("div");
-            newField.className = `element col${cols} field${row}`;
-            newField.tabIndex = "1";
-            newCol.appendChild(newField);
-            grid[cols][row] = new Field(row,cols,undefined);
-            interactionEvent(grid[cols],grid[cols][row]);
-        }
+    addColBtn.addEventListener("click",function(){
         cols++;
-        console.log(grid);
         gridLoad();
     })
 
-    delCol.addEventListener("click",function(){
+    delColBtn.addEventListener("click",function(){
         if(cols == 1){
             alert("There can't be less than 1 column");
         }else{
             
         cols--;
-        for (row = 0; row <= rows-1; row++){
-            contentDelete(cols,row);
-        }
-        document.querySelector(`.col${cols}`).remove();
-        width -= 70;
-        template = template.slice(0,-5);
-        grid.pop();
-        console.log(grid);
         gridLoad();
         }
-        
     })
 
-    addRow.addEventListener("click",function(){
+    addRowBtn.addEventListener("click",function(){
         
-        for(col=0;col <= cols-1 ;col++){
-
-            let newField = document.createElement("div");
-            newField.className = `element col${col} field${rows}`;
-            newField.tabIndex = "1";
-            document.querySelector(`.col${col}`).appendChild(newField);
-            grid[col].push(new Field(rows,col,undefined));
-            interactionEvent(grid[col],grid[col][rows]);
-        }
         rows++;
         gridLoad();
-        console.log(grid);
+        
     })
 
-    delRow.addEventListener("click",function(){
+    delRowBtn.addEventListener("click",function(){
         if (rows===1){
             alert("There can't be less than 1 row!");
         }else{
-            rows--;
-        console.log(rows);
-        for(col=0;col <= cols-1 ;col++){
-            contentDelete(col,rows);
-            document.querySelector(`.element.col${col}.field${rows}`).remove();
-            grid[col].pop();
-        }
+        rows--;
         gridLoad();
-        console.log(grid);
         }
         
     })

@@ -12,7 +12,7 @@
 <body style="text-align: center;">
     
     <h1>Battle-Map</h1>
-
+    
     <!--INITIATIVE ORDER-->
     <div class="initiative">
         <form class="init-input">
@@ -27,13 +27,16 @@
             </ul>
         </div>
     </div>
-    
-    <!--STORAGE-->
-    <div class="maplist">
 
+    <!--STORAGE-->
+    <div class="box">
+        <div class="maplist">
+            <h5>Saves</h5>
+    
+        </div>
     </div>
 
-
+    <!--Battle Map-->
     <div class="container"  >
         <!--TOOLBAR-->
         <ul class="toolbar" style="font-size: medium">
@@ -56,9 +59,18 @@
 
         <!--MAIN GRID-->
         <div class="grid">
+            <div class="col0">
+                <div class="element col0 field0" tabindex="1"></div>
+            </div>
         </div>
                 
 
+    </div>
+
+    <div class="popup">
+        <input type="text" placeholder="map-name" id="newSave">
+        <a href="#" id="closePopup">X</a>
+        <input type="submit" id="submit-save" value="Save">
     </div>
 
     <script src="app.js"></script>

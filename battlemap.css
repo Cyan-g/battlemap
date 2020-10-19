@@ -142,6 +142,7 @@ TOOLBAR*/
     }
     .toolbar > .button{
         flex: 1;
+        z-index: 4;
         display: block;
         box-sizing: border-box;
         padding: 0px 0px 0px 0px;
@@ -197,7 +198,7 @@ DROPDOWN MENU*/
 TURN ORDER LIST*/
 
     .initiative{
-        margin-top: 50px;
+        margin-top: 80px;
         display: block;
         float: left;
         position: sticky;
@@ -205,7 +206,7 @@ TURN ORDER LIST*/
         top: 5%;
         z-index: 5;
         box-sizing: border-box;
-        max-width: 300px;
+        max-width: 200px;
         width: 12%;
         min-height: 200px;
         background-color: lightgray;
@@ -240,15 +241,71 @@ TURN ORDER LIST*/
     }
 
 /*MAP SAVE LIST*/
+    .box{
+        right: 0;
+        z-index: 2;
+        top: 5%;
+        float: right;
+        position: sticky;
+        margin-top: 80px;
+        display: block;
+        box-sizing: border-box;
+        overflow: hidden;
+        width: 12%;
+        min-height: 200px;
+    }
 
     .maplist{
-        display: none; /* <-----------REMOVE THIS !!!!!!!!!!!!!! -------->*/
+        display: block;
         float: right;
+        transform: translateX(80%);
+        z-index: 11;
         box-sizing: border-box;
-        width: 12%;
+        width: 100%;
         min-height: 200px;
         background-color: lightgray;
         border: solid black 2px;
         border-right: none;
         border-radius:  15px 0px 0px 15px;
+    }
+
+    .maplist:hover{
+        transition: ease-in-out 1s;
+        transform: translateX(0%);
+    }
+
+    .popup{
+        display: none;
+        position: fixed;
+        top: 20%;
+        left: 50%;
+        width: 300px;
+        height: 100px;
+        background-color: lightgray;
+        z-index: 10;
+        transform: translate(-50%, 0%);
+        border-radius: 15px;
+        border: solid black 2px;
+    }
+
+    .popup > a{
+        float: right;
+        transform: translateX(-100%);
+    }
+
+    #newSave{
+        text-align: center;
+        background-color: white;
+        width: 80%;
+        margin-top: 5%;
+        border-radius: 10px;
+    }
+
+    #submit-save{ 
+        text-align: center;
+        background-color: white;
+        width: 50%;
+        margin-bottom: 5%;
+        border-radius: 10px;
+
     }
