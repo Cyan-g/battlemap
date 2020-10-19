@@ -80,9 +80,11 @@ h1{
     .element:focus{
         box-shadow: inset rgba(55, 88, 177, 0.74) 0 0 5px;
     }
-
-    .element > .moveButton{
+    .element:hover .moveButton{
         display: block;
+    }
+    .element > .moveButton{
+        display: none;
         box-sizing: border-box;
         position: absolute;
         background-color: darkslategray;
