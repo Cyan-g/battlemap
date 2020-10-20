@@ -30,6 +30,7 @@ var template = "auto";
 var width = 70;
 var cols = 10;
 var rows = 10;
+var ID;
 
 var saves = [];
 var grid = new Array(1);
@@ -368,11 +369,11 @@ function removeSave(index){
 
 // CONSTRUCTORS
 
-function Save(index){
+function Save(ID){
     if(mapName.value=="" || mapName.value.length > 13){
         alert("Please enter a name for your map between 1 and 13 characters");
     }else{
-        this.index = index;
+        this.ID = ID;
         this.name = mapName.value;
         this.loadout = new Array(cols);
         //DEEP COPY GRID
@@ -393,22 +394,21 @@ function Save(index){
         this.delete = document.createElement("div");
         this.delete.className = "list-delete";
         this.delete.textContent = "X";
-        this.delete.id = `${index}`
+        this.delete.id = `${ID}`
 
         this.load = document.createElement("div");
         this.load.className = "list-load";
-        this.load.id = `${index}`
+        this.load.id = `${ID}`
         
         this.item.appendChild(this.delete);
         this.item.appendChild(this.load);
 
         this.load.addEventListener("click",function(e){
-            let Save = e.target.id;
-            loadSave(saves[Save].loadout);
+            loadSave(saves[saves.findIndex(element => element.ID === ID)].loadout);
         })
 
         this.delete.addEventListener("click",function(e){
-            let Save = e.target.id;
+            let Save = saves.findIndex(element => element.ID === ID);
             removeSave(Save);
         })
 
@@ -615,7 +615,8 @@ function loadEventListeners(){
     })
 
     mapSubmit.addEventListener("click",function(){
-        saves.push(new Save(saves.length));
+        let ID = Date.now();
+        saves.push(new Save(ID));
     });
 
     // GRID RESIZING FUNCTIONS
