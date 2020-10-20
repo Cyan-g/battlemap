@@ -21,7 +21,6 @@ const delRowBtn = document.getElementById("row-");
 const addColBtn = document.getElementById("col+");
 const delColBtn = document.getElementById("col-");
 
-
 let tool = "";
 
 var row = 0;
@@ -35,8 +34,11 @@ var rows = 10;
 var saves = [];
 var grid = new Array(1);
 grid[0] =  new Array(1);
-grid[0][0] = new Field(0,0,undefined);
+grid[0][0] = new Field(0,0,null);
 gridLoad();
+
+console.log(grid[0]);
+console.log(JSON.parse(JSON.stringify(grid[0])));
 
 //FUNCTIONS
 
@@ -65,7 +67,7 @@ function gridLoad(){
             if (tile.content instanceof UIObject){
                 tile.field.style.background = "black";
                 tile.field.textContent = "";
-                tile.buttons = undefined;
+                tile.buttons = null;
 
             }else if(tile.content instanceof Ally){
                 tile.field.style.color = "white";
@@ -128,7 +130,7 @@ function gridLoad(){
 
                     let targetField = grid[row][col-1].content;
 
-                    if (targetField === undefined){
+                    if (targetField === null){
                         let buffer = targetField;
                         grid[row][col-1].content = currentField;
                         grid[row][col].content = targetField;
@@ -147,7 +149,7 @@ function gridLoad(){
 
                     let targetField = grid[row+1][col].content;
                     
-                    if (targetField === undefined){
+                    if (targetField === null){
                         let buffer = targetField;
                         grid[row+1][col].content = currentField;
                         grid[row][col].content = targetField;
@@ -167,7 +169,7 @@ function gridLoad(){
 
                     let targetField = grid[row][col+1].content;
                     
-                    if (targetField === undefined){
+                    if (targetField === null){
                         let buffer = targetField;
                         grid[row][col+1].content = currentField;
                         grid[row][col].content = targetField;
@@ -187,7 +189,7 @@ function gridLoad(){
 
                     let targetField = grid[row-1][col].content;
                     
-                    if (targetField === undefined){
+                    if (targetField === null){
                         let buffer = targetField;
                         grid[row-1][col].content = currentField;
                         grid[row][col].content = targetField;
@@ -227,11 +229,11 @@ function sortInit(){
 
 //delete content by grid coordinate
 function contentDelete(column,tile){
-    if (grid[column][tile].content != undefined){
-        if (grid[column][tile].content.item != undefined){
+    if (grid[column][tile].content != null){
+        if (grid[column][tile].content.item != null){
         grid[column][tile].content.item.remove();
         }
-    grid[column][tile].content = undefined;
+    grid[column][tile].content = null;
     }
 }
 
@@ -242,8 +244,8 @@ function checkUnique(name){
         column.forEach( tile =>{
             row = grid.indexOf(column);
             col = column.indexOf(tile);
-            if (grid[row][col].content != undefined){
-                if (grid[row][col].content.name != undefined){
+            if (grid[row][col].content != null){
+                if (grid[row][col].content.name != null){
                     if ((grid[row][col].content.name) === name){
                         unique = false;
                         
@@ -287,7 +289,7 @@ function addCol(){
             newField.className = `element col${grid.length-1} field${row}`;
             newField.tabIndex = "1";
             newCol.appendChild(newField);
-            grid[grid.length-1][row] = new Field(row,grid.length-1,undefined);
+            grid[grid.length-1][row] = new Field(row,grid.length-1,null);
             interactionEvent(grid[grid.length-1],grid[grid.length-1][row]);
         }
 }
@@ -314,7 +316,7 @@ function addRow(){
         newField.className = `element col${col} field${row}`;
         newField.tabIndex = "1";
         document.querySelector(`.col${col}`).appendChild(newField);
-        grid[col].push(new Field(row,col,undefined));
+        grid[col].push(new Field(row,col,null));
         interactionEvent(grid[col],grid[col][row-1]);
         col++;
     }
@@ -339,17 +341,18 @@ function loadSave(newGrid){
     cols = newGrid.length;
 
     grid = new Array(cols);
-    console.log(newGrid);
 
     for(col = 0; col <= cols-1;col++){
-        grid[col] = new Array(rows);
+        grid[col] = Object.assign(new Array,newGrid[col]);
     }
     for(col = 0; col <= cols-1;col++){
-        for(row = 0; row < rows-1;row++){
-            grid[col][row] = newGrid[col][row];
+        for(row = 0; row < rows;row++){
+            grid[col][row] = Object.assign(new Field,newGrid[col][row]);
+            if(grid[col][row].content instanceof Ally || grid[col][row].content instanceof Enemy){
+                document.querySelector(".collection").appendChild(grid[col][row].content.item);
+            }
         }
     }
-    console.log(grid);
     gridLoad();
 }
 
@@ -357,49 +360,70 @@ function getSaves(){
 
 }
 
-function removeSave(){
-
+function removeSave(index){
+    saves[index].item.remove();
+    saves[index] = null;
+    saves.splice(index, 1);
 }
 
 // CONSTRUCTORS
 
-function addSave(index){
-    if(mapName.value==""){
-        alert("Please enter a name for your map");
+function Save(index){
+    if(mapName.value=="" || mapName.value.length > 13){
+        alert("Please enter a name for your map between 1 and 13 characters");
     }else{
         this.index = index;
-        this.name = index + ": " + mapName.value;
+        this.name = mapName.value;
         this.loadout = new Array(cols);
         //DEEP COPY GRID
         for(col = 0; col <= cols-1;col++){
-            this.loadout[col] = new Array(rows);
+            this.loadout[col] = Object.assign(new Array,grid[col]);
             }
         for(col = 0; col <= cols-1;col++){
             for(row = 0; row <= rows-1;row++){
-                this.loadout[col][row] = grid[col][row];
+                this.loadout[col][row] = Object.assign(new Field,grid[col][row]);
             }
         }
-        console.log(this.loadout);
+
+
+        //Create List Element
         this.item = document.createElement("div");
         this.item.className = `list-item` ;
-        this.item.id = `${index}`;
 
-        this.item.addEventListener("click",function(e){
+        this.delete = document.createElement("div");
+        this.delete.className = "list-delete";
+        this.delete.textContent = "X";
+        this.delete.id = `${index}`
+
+        this.load = document.createElement("div");
+        this.load.className = "list-load";
+        this.load.id = `${index}`
+        
+        this.item.appendChild(this.delete);
+        this.item.appendChild(this.load);
+
+        this.load.addEventListener("click",function(e){
             let Save = e.target.id;
             loadSave(saves[Save].loadout);
+        })
+
+        this.delete.addEventListener("click",function(e){
+            let Save = e.target.id;
+            removeSave(Save);
         })
 
         this.item.appendChild(document.createTextNode(this.name));
         document.querySelector(".maplist").appendChild(this.item);
         mapName.value= "";
         popup.style.display = "none";
+        console.log(saves);
     }
 }
 
 function Field(row,col,content){
     this.field = document.querySelector(`.field${row}.col${col}`);
     this.content = content;
-    this.buttons = undefined;
+    this.buttons = null;
 }
 
 function UIObject(){
@@ -462,14 +486,16 @@ function Display(text){
 function interactionEvent(column,tile){
     tile.field.addEventListener("click",function(){
         gridLoad();
+        let col = column[0].field.className.match(numberPattern)[0];
+        let row = tile.field.className.match(numberPattern)[1];
         switch(tool) {
 
             case "delete":
-                contentDelete(grid.indexOf(column),column.indexOf(tile));
+                contentDelete(col,row);
             break;
     
             case "enemy":
-                 if(entityInit.value === undefined || entityName.value === ""){
+                 if(entityInit.value === null || entityName.value === ""){
                     alert("Enter Entity Data");
                     break;
                 }
@@ -479,8 +505,8 @@ function interactionEvent(column,tile){
                 }
     
                 if (checkUnique(entityName.value)){
-                    contentDelete(grid.indexOf(column),column.indexOf(tile));
-                    tile.content = new Enemy(entityName.value,entityInit.value);
+                    contentDelete(col,row);
+                    grid[col][row].content = new Enemy(entityName.value,entityInit.value);
                     sortInit();
                 }
                 tool = "";
@@ -491,7 +517,7 @@ function interactionEvent(column,tile){
             break;
     
             case "ally":
-                if(entityInit.value === undefined || entityName.value === ""){
+                if(entityInit.value === null || entityName.value === ""){
                     alert("Enter Entity Data");
                     break;
                 }
@@ -500,8 +526,8 @@ function interactionEvent(column,tile){
                     break;
                 }
                 if (checkUnique(entityName.value)){
-                    contentDelete(grid.indexOf(column),column.indexOf(tile));
-                    tile.content = new Ally(entityName.value,entityInit.value);
+                    contentDelete(col,row);
+                    grid[col][row].content = new Ally(entityName.value,entityInit.value);
                     sortInit();
                 }
                 tool = "";
@@ -512,8 +538,8 @@ function interactionEvent(column,tile){
             break;
     
             case "object":
-                contentDelete(grid.indexOf(column),column.indexOf(tile));
-                tile.content = new UIObject();
+                contentDelete(col,row);
+                grid[col][row].content = new UIObject();
             break;
     
             default:
@@ -589,7 +615,7 @@ function loadEventListeners(){
     })
 
     mapSubmit.addEventListener("click",function(){
-        saves.push(new addSave(saves.length));
+        saves.push(new Save(saves.length));
     });
 
     // GRID RESIZING FUNCTIONS
