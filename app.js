@@ -58,8 +58,7 @@ function gridLoad(){
     while (grid.length > cols){
         delCol();
     }
-
-    console.log(grid);
+    
 
     grid.forEach( column => {
         column.forEach(tile =>{
@@ -299,7 +298,7 @@ function delCol(){
         contentDelete(cols,row);
         row++;
     }
-    document.querySelector(`.col${cols+1}`).remove();
+    document.querySelector(`.col${cols}`).remove();
     width -= 70;
     template = template.slice(0,-5);
     grid.pop();
@@ -336,7 +335,21 @@ function delRow(){
 
 //Save managing
 function loadSave(newGrid){
-    grid=newGrid;
+    rows = newGrid[0].length;
+    cols = newGrid.length;
+
+    grid = new Array(cols);
+    console.log(newGrid);
+
+    for(col = 0; col <= cols-1;col++){
+        grid[col] = new Array(rows);
+    }
+    for(col = 0; col <= cols-1;col++){
+        for(row = 0; row < rows-1;row++){
+            grid[col][row] = newGrid[col][row];
+        }
+    }
+    console.log(grid);
     gridLoad();
 }
 
@@ -356,12 +369,23 @@ function addSave(index){
     }else{
         this.index = index;
         this.name = index + ": " + mapName.value;
-        this.loadout = grid;
+        this.loadout = new Array(cols);
+        //DEEP COPY GRID
+        for(col = 0; col <= cols-1;col++){
+            this.loadout[col] = new Array(rows);
+            }
+        for(col = 0; col <= cols-1;col++){
+            for(row = 0; row <= rows-1;row++){
+                this.loadout[col][row] = grid[col][row];
+            }
+        }
+        console.log(this.loadout);
         this.item = document.createElement("div");
-        this.item.className = `list-item save${index}` ;
+        this.item.className = `list-item` ;
+        this.item.id = `${index}`;
 
         this.item.addEventListener("click",function(e){
-            let Save = e.target.classList.match(numberPattern)[-1];
+            let Save = e.target.id;
             loadSave(saves[Save].loadout);
         })
 
