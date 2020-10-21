@@ -30,6 +30,13 @@ body{
     background-color: teal;
 }
 
+footer{
+    border-top: solid black 2px;
+    background-color: white;
+    padding: 10px;
+    text-align: center;
+}
+
 h1{
     border-bottom: solid black 5px;
     margin: 0;
@@ -41,6 +48,7 @@ h1{
 
     .container{
         margin-top: 40px;
+        margin-bottom: 40px;
     }
 
     .grid{

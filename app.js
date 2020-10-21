@@ -1,8 +1,9 @@
-//INITIALIZE VARIABLES
+//======================================INITIALIZE VARIABLES
 const entityName = document.querySelector("#newEntity");
 const entityInit = document.querySelector("#init");
 const clearInitBtn = document.querySelector("#init-clear");
 
+//TOOLS HTML
 const newEnemyBtn = document.querySelector("#enemy");
 const newAllyBtn = document.getElementById("ally");
 const newObjectBtn = document.getElementById("object");
@@ -14,6 +15,7 @@ const popup = document.querySelector(".popup");
 const mapName = document.querySelector("#newSave");
 const mapSubmit = document.querySelector("#submit-save");
 
+//UI GRID HTML
 const UiGrid = document.querySelector(".grid");
 const UIbody = document.querySelector("body");
 const addRowBtn = document.getElementById("row+");
@@ -21,25 +23,24 @@ const delRowBtn = document.getElementById("row-");
 const addColBtn = document.getElementById("col+");
 const delColBtn = document.getElementById("col-");
 
+const numberPattern = /\d+/g;
+const letterPattern = /\D/;
+
 let tool = "";
 
 var row = 0;
 var col = 0;
-var numberPattern = /\d+/g;
 var template = "auto";
 var width = 70;
 var cols = 10;
 var rows = 10;
-var ID;
 
 var saves = [];
 var grid = new Array(1);
 grid[0] =  new Array(1);
 grid[0][0] = new Field(0,0,null);
 gridLoad();
-
-console.log(grid[0]);
-console.log(JSON.parse(JSON.stringify(grid[0])));
+//==================================================================
 
 //FUNCTIONS
 
@@ -62,7 +63,8 @@ function gridLoad(){
         delCol();
     }
     
-
+    //GENERATE HTML CONTENTS FROM VIRTUAL ARRAY
+    document.querySelector(".collection").innerHTML = ""; //TURN ORDER LIST REWRITING
     grid.forEach( column => {
         column.forEach(tile =>{
             if (tile.content instanceof UIObject){
@@ -80,6 +82,11 @@ function gridLoad(){
                 tile.field.appendChild(tile.buttons.down);
                 tile.field.appendChild(tile.buttons.left);
 
+                newItem = document.createElement("li");
+                newItem.className = "list-item";
+                newItem.appendChild(document.createTextNode(`${tile.content.name} \n init: ${tile.content.init}`));
+                document.querySelector(".collection").appendChild(newItem);
+
                 tile.display = new Display(`${tile.content.name.slice(0,1)}${tile.content.name.slice(-1)}`);
                 tile.field.appendChild(tile.display.item);
                 tile.display.item.style.background = "green";
@@ -94,6 +101,11 @@ function gridLoad(){
                 tile.field.appendChild(tile.buttons.down);
                 tile.field.appendChild(tile.buttons.left);
 
+                newItem = document.createElement("li");
+                newItem.className = "list-item";
+                newItem.appendChild(document.createTextNode(`${tile.content.name} \n init: ${tile.content.init}`));
+                document.querySelector(".collection").appendChild(newItem);
+
                 tile.display = new Display(`${tile.content.name.slice(0,1)}${tile.content.name.slice(-1)}`);
                 tile.field.appendChild(tile.display.item);
                 tile.display.item.style.background = "red";
@@ -102,6 +114,7 @@ function gridLoad(){
                     tile.field.style.color = "black";
                     tile.field.style.background = "white";
                     tile.field.textContent = "";
+                    if(tile.buttons){tile.buttons = null}
             }
         });
     });
@@ -204,10 +217,12 @@ function gridLoad(){
             })
         })
     }
+
+    saveList();
 }
 
 function sortInit(){
-        var list = document.querySelector('.collection');
+    var list = document.querySelector('.collection');
 
     var items = list.childNodes;
     var itemsArr = [];
@@ -357,19 +372,56 @@ function loadSave(newGrid){
     gridLoad();
 }
 
-function getSaves(){
-
-}
+window.addEventListener("load",function(){
+    if(JSON.parse(localStorage.getItem("saves"))){
+        saves = JSON.parse(localStorage.getItem("saves"));
+    }
+    gridLoad();
+})
 
 function removeSave(index){
-    saves[index].item.remove();
+    document.getElementById(`${saves[index].ID}`).remove();
     saves[index] = null;
     saves.splice(index, 1);
+    localStorage.setItem("saves",JSON.stringify(saves));
 }
 
+function saveList(){
+    document.querySelector(".maplist").innerHTML = `<h5>Saves</h5>`;
+
+    saves.forEach(save =>{
+        newItem = document.createElement("div");
+        newItem.className = `list-item`;
+        newItem.id = `${save.ID}`;
+
+        newDelBtn = document.createElement("div");
+        newDelBtn.className = "list-delete";
+        newDelBtn.textContent = "X";
+        newDelBtn.id = `${save.ID}`;
+
+        newLoadBtn = document.createElement("div");
+        newLoadBtn.className = "list-load";
+        newLoadBtn.id = `${save.ID}`;
+        
+        newItem.appendChild(newDelBtn);
+        newItem.appendChild(newLoadBtn);
+
+        newLoadBtn.addEventListener("click",function(e){
+            loadSave(saves[saves.findIndex(save => save.ID == newItem.id)].loadout);
+        })
+
+        newDelBtn.addEventListener("click",function(e){
+            removeSave(saves.findIndex(save => save.ID == newItem.id));
+        })
+
+        newItem.appendChild(document.createTextNode(save.name));
+        document.querySelector(".maplist").appendChild(newItem);
+    })
+}
 // CONSTRUCTORS
 
 function Save(ID){
+
     if(mapName.value=="" || mapName.value.length > 13){
         alert("Please enter a name for your map between 1 and 13 characters");
     }else{
@@ -386,34 +438,6 @@ function Save(ID){
             }
         }
 
-
-        //Create List Element
-        this.item = document.createElement("div");
-        this.item.className = `list-item` ;
-
-        this.delete = document.createElement("div");
-        this.delete.className = "list-delete";
-        this.delete.textContent = "X";
-        this.delete.id = `${ID}`
-
-        this.load = document.createElement("div");
-        this.load.className = "list-load";
-        this.load.id = `${ID}`
-        
-        this.item.appendChild(this.delete);
-        this.item.appendChild(this.load);
-
-        this.load.addEventListener("click",function(e){
-            loadSave(saves[saves.findIndex(element => element.ID === ID)].loadout);
-        })
-
-        this.delete.addEventListener("click",function(e){
-            let Save = saves.findIndex(element => element.ID === ID);
-            removeSave(Save);
-        })
-
-        this.item.appendChild(document.createTextNode(this.name));
-        document.querySelector(".maplist").appendChild(this.item);
         mapName.value= "";
         popup.style.display = "none";
         console.log(saves);
@@ -434,11 +458,6 @@ function Enemy(name,init){
 
     this.name = name;
     this.init = init;
-    
-    this.item = document.createElement("li");
-    this.item.className = "list-item";
-    this.item.appendChild(document.createTextNode(`${name} \n init: ${init}`));
-    document.querySelector(".collection").appendChild(this.item);
 
     entityInit.value = "";
     entityName.value = "";
@@ -447,13 +466,8 @@ function Enemy(name,init){
 
 function Ally(name,init){
 
-        this.name = name;
-        this.init = init;
-        
-        this.item = document.createElement("li");
-        this.item.className = "list-item";
-        this.item.appendChild(document.createTextNode(`${name}\n init: ${init}`));
-        document.querySelector(".collection").appendChild(this.item);
+    this.name = name;
+    this.init = init;
 
     entityInit.value = "";
     entityName.value = "";
@@ -495,19 +509,24 @@ function interactionEvent(column,tile){
             break;
     
             case "enemy":
-                 if(entityInit.value === null || entityName.value === ""){
+
+                if(entityInit.value == null || entityName.value == ""){
                     alert("Enter Entity Data");
                     break;
                 }
-                if(parseInt(entityInit.value) < 1){
-                    alert("Initiative needs to be bigger than 0")
+
+                if(letterPattern.test(entityInit.value)){
+                    alert("Initiative needs to be a number");
+                    break;
+                }
+                if(parseInt(entityInit.value) < 0){
+                    alert("Initiative needs to be atleast 0");
                     break;
                 }
     
                 if (checkUnique(entityName.value)){
                     contentDelete(col,row);
                     grid[col][row].content = new Enemy(entityName.value,entityInit.value);
-                    sortInit();
                 }
                 tool = "";
                 buttonSelect();
@@ -517,12 +536,16 @@ function interactionEvent(column,tile){
             break;
     
             case "ally":
-                if(entityInit.value === null || entityName.value === ""){
+                if(entityInit.value == null || entityName.value == ""){
                     alert("Enter Entity Data");
                     break;
                 }
-                if(parseInt(entityInit.value) < 1){
-                    alert("Initiative needs to be bigger than 0")
+                if(letterPattern.test(entityInit.value)){
+                    alert("Initiative needs to be a number");
+                    break;
+                }
+                if(parseInt(entityInit.value) < 0){
+                    alert("Initiative needs to be atleast 0")
                     break;
                 }
                 if (checkUnique(entityName.value)){
@@ -615,8 +638,10 @@ function loadEventListeners(){
     })
 
     mapSubmit.addEventListener("click",function(){
-        let ID = Date.now();
-        saves.push(new Save(ID));
+        saves.push(new Save(Date.now()));
+        localStorage.setItem("saves",JSON.stringify(saves));
+        saveList();
+        gridLoad();
     });
 
     // GRID RESIZING FUNCTIONS
