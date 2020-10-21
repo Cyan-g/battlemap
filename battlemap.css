@@ -92,10 +92,11 @@ h1{
         display: block;
     }
     .element > .moveButton{
+        text-align: center;
         display: none;
         box-sizing: border-box;
         position: absolute;
-        background-color: rgba(100,100,100,0.25);
+        background-color: rgba(0, 0, 0, 0.35);
         height: 33%;
         width: 33%;
         z-index: 3;

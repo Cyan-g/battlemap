@@ -39,7 +39,6 @@ var saves = [];
 var grid = new Array(1);
 grid[0] =  new Array(1);
 grid[0][0] = new Field(0,0,null);
-gridLoad();
 //==================================================================
 
 //FUNCTIONS
@@ -67,50 +66,40 @@ function gridLoad(){
     grid.forEach((column,colindex) => {
         column.forEach((tile,index) =>{
             tile.field = document.querySelector(`.element.col${colindex}.field${index}`);
-            if (tile.content instanceof UIObject){
-                tile.field.style.background = "black";
-                tile.field.textContent = "";
-                tile.buttons = null;
+            tile.field.innerHTML = "";
+            if(tile.content){
+                if (!(tile.content.init)){
+                    tile.field.style.background = "black";
+                    tile.field.textContent = "";
+                    tile.buttons = null;
+    
+                }else if(tile.content.init){
+                    tile.field.style.color = "white";
+                    tile.field.style.background = "white";
+    
+                    tile.buttons = new MoveButtons();
+                    tile.field.appendChild(tile.buttons.up);
+                    tile.field.appendChild(tile.buttons.right);
+                    tile.field.appendChild(tile.buttons.down);
+                    tile.field.appendChild(tile.buttons.left);
+    
+                    newItem = document.createElement("li");
+                    newItem.className = "list-item";
+                    newItem.appendChild(document.createTextNode(`${tile.content.name} \n init: ${tile.content.init}`));
+                    document.querySelector(".collection").appendChild(newItem);
+    
+                    tile.display = new Display(`${tile.content.name.slice(0,1)}${tile.content.name.slice(-1)}`);
+                    tile.field.appendChild(tile.display.item);
+                    tile.display.item.style.background = tile.content.colour;
+                    
+                    tile.buttons.up.style.fontSize = (tile.field.clientWidth)/3;
+                    tile.buttons.down.style.fontSize = (tile.field.clientWidth)/3;
+                    tile.buttons.left.style.fontSize = (tile.field.clientWidth)/3;
+                    tile.buttons.right.style.fontSize = (tile.field.clientWidth)/3;
+                }
+            }
 
-            }else if(tile.content instanceof Ally){
-                tile.field.style.color = "white";
-                tile.field.style.background = "white";
-
-                tile.buttons = new MoveButtons();
-                tile.field.appendChild(tile.buttons.up);
-                tile.field.appendChild(tile.buttons.right);
-                tile.field.appendChild(tile.buttons.down);
-                tile.field.appendChild(tile.buttons.left);
-
-                newItem = document.createElement("li");
-                newItem.className = "list-item";
-                newItem.appendChild(document.createTextNode(`${tile.content.name} \n init: ${tile.content.init}`));
-                document.querySelector(".collection").appendChild(newItem);
-
-                tile.display = new Display(`${tile.content.name.slice(0,1)}${tile.content.name.slice(-1)}`);
-                tile.field.appendChild(tile.display.item);
-                tile.display.item.style.background = "green";
-
-            }else if(tile.content instanceof Enemy){
-                tile.field.style.color = "white";
-                tile.field.style.background = "white";
-                tile.buttons = new MoveButtons();
-
-                tile.field.appendChild(tile.buttons.up);
-                tile.field.appendChild(tile.buttons.right);
-                tile.field.appendChild(tile.buttons.down);
-                tile.field.appendChild(tile.buttons.left);
-
-                newItem = document.createElement("li");
-                newItem.className = "list-item";
-                newItem.appendChild(document.createTextNode(`${tile.content.name} \n init: ${tile.content.init}`));
-                document.querySelector(".collection").appendChild(newItem);
-
-                tile.display = new Display(`${tile.content.name.slice(0,1)}${tile.content.name.slice(-1)}`);
-                tile.field.appendChild(tile.display.item);
-                tile.display.item.style.background = "red";
-
-            }else{
+            else{
                     tile.field.style.color = "black";
                     tile.field.style.background = "white";
                     tile.field.textContent = "";
@@ -219,6 +208,7 @@ function gridLoad(){
     }
 
     saveList();
+    console.log(grid);
 }
 
 function sortInit(){
@@ -311,6 +301,7 @@ function addCol(){
 }
 
 function delCol(){
+    console.log("del col");
     let row = 0;
     while (row <= rows-1){
         contentDelete(cols,row);
@@ -333,13 +324,14 @@ function addRow(){
         newField.tabIndex = "1";
         document.querySelector(`.col${col}`).appendChild(newField);
         grid[col].push(new Field(row,col,null));
-        interactionEvent(grid[col],grid[col][row-1]);
+        interactionEvent(grid[col],grid[col][row]);
         col++;
     }
     
 }
 
 function delRow(){
+    console.log("del row");
     let col = 0;
     while(col <= cols-1 ){
         contentDelete(col,rows);
@@ -353,8 +345,27 @@ function delRow(){
 
 //Save managing
 function loadSave(newGrid){
-    rows = newGrid[0].length;
-    cols = newGrid.length;
+
+    //FIX GRID SIZE
+    while (grid[0].length < newGrid[0].length){
+        addRow();
+        rows++;
+    }
+
+    while (grid[0].length > newGrid[0].length){
+        rows--;
+        delRow();
+    }
+
+    while (grid.length < newGrid.length){
+        addCol();
+        cols++;
+    }
+    while (grid.length > newGrid.length){
+        cols--;
+        delCol();
+    }
+    console.log(grid);
 
     gridLoad();
 
@@ -375,10 +386,8 @@ function loadSave(newGrid){
 
 window.addEventListener("load",function(){
     if(JSON.parse(localStorage.getItem("saves"))){
-        saves = JSON.parse(localStorage.getItem("saves"));
+        saves = Object.assign(JSON.parse(localStorage.getItem("saves")));
     }
-    console.log("local storage saves");
-    console.log(JSON.parse(localStorage.getItem("saves")));
     gridLoad();
 })
 
@@ -411,11 +420,12 @@ function saveList(){
         newItem.appendChild(newLoadBtn);
 
         newLoadBtn.addEventListener("click",function(e){
-            loadSave(saves[saves.findIndex(save => save.ID == newItem.id)].loadout);
+            console.log(saves.findIndex(save => save.ID == e.target.id));
+            loadSave(saves[saves.findIndex(save => save.ID == e.target.id)].loadout);
         })
 
         newDelBtn.addEventListener("click",function(e){
-            removeSave(saves.findIndex(save => save.ID == newItem.id));
+            removeSave(saves.findIndex(save => save.ID == e.target.id));
         })
 
         newItem.appendChild(document.createTextNode(save.name));
@@ -462,6 +472,7 @@ function Enemy(name,init){
 
     this.name = name;
     this.init = init;
+    this.colour = "red";
 
     entityInit.value = "";
     entityName.value = "";
@@ -472,6 +483,7 @@ function Ally(name,init){
 
     this.name = name;
     this.init = init;
+    this.colour = "green";
 
     entityInit.value = "";
     entityName.value = "";
@@ -480,16 +492,16 @@ function Ally(name,init){
 
 function MoveButtons(){
     this.up = document.createElement("div");
-    this.up.className = "moveButton up";
+    this.up.className = "moveButton up fa fa-angle-double-up";
 
     this.right = document.createElement("div");
-    this.right.className = "moveButton right";
+    this.right.className = "moveButton right fa fa-angle-double-right";
 
     this.down = document.createElement("div");
-    this.down.className = "moveButton down";
+    this.down.className = "moveButton down fa fa-angle-double-down";
 
     this.left = document.createElement("div");
-    this.left.className = "moveButton left";
+    this.left.className = "moveButton left fa fa-angle-double-left";
 }
 
 function Display(text){
@@ -503,7 +515,6 @@ function Display(text){
 // INTERACTION HANDLER
 function interactionEvent(column,tile){
     tile.field.addEventListener("click",function(){
-        gridLoad();
         let col = column[0].field.className.match(numberPattern)[0];
         let row = tile.field.className.match(numberPattern)[1];
         switch(tool) {
