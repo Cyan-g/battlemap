@@ -47,7 +47,6 @@ gridLoad();
 //update grid from array AND HANDLE MOVEMENT
 function gridLoad(){
     //FIX GRID SIZE
-
     while (grid[0].length < rows){
         addRow();
     }
@@ -65,8 +64,9 @@ function gridLoad(){
     
     //GENERATE HTML CONTENTS FROM VIRTUAL ARRAY
     document.querySelector(".collection").innerHTML = ""; //TURN ORDER LIST REWRITING
-    grid.forEach( column => {
-        column.forEach(tile =>{
+    grid.forEach((column,colindex) => {
+        column.forEach((tile,index) =>{
+            tile.field = document.querySelector(`.element.col${colindex}.field${index}`);
             if (tile.content instanceof UIObject){
                 tile.field.style.background = "black";
                 tile.field.textContent = "";
@@ -356,6 +356,8 @@ function loadSave(newGrid){
     rows = newGrid[0].length;
     cols = newGrid.length;
 
+    gridLoad();
+
     grid = new Array(cols);
 
     for(col = 0; col <= cols-1;col++){
@@ -364,11 +366,10 @@ function loadSave(newGrid){
     for(col = 0; col <= cols-1;col++){
         for(row = 0; row < rows;row++){
             grid[col][row] = Object.assign(new Field,newGrid[col][row]);
-            if(grid[col][row].content instanceof Ally || grid[col][row].content instanceof Enemy){
-                document.querySelector(".collection").appendChild(grid[col][row].content.item);
-            }
+            
         }
     }
+    console.log(grid);
     gridLoad();
 }
 
@@ -376,6 +377,8 @@ window.addEventListener("load",function(){
     if(JSON.parse(localStorage.getItem("saves"))){
         saves = JSON.parse(localStorage.getItem("saves"));
     }
+    console.log("local storage saves");
+    console.log(JSON.parse(localStorage.getItem("saves")));
     gridLoad();
 })
 
@@ -384,6 +387,7 @@ function removeSave(index){
     saves[index] = null;
     saves.splice(index, 1);
     localStorage.setItem("saves",JSON.stringify(saves));
+    saveList();
 }
 
 function saveList(){
@@ -640,6 +644,8 @@ function loadEventListeners(){
     mapSubmit.addEventListener("click",function(){
         saves.push(new Save(Date.now()));
         localStorage.setItem("saves",JSON.stringify(saves));
+        console.log("current Saves");
+        console.log(saves);
         saveList();
         gridLoad();
     });

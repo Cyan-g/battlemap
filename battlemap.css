@@ -95,10 +95,9 @@ h1{
         display: none;
         box-sizing: border-box;
         position: absolute;
-        background-color: darkslategray;
-        height: 15px;
-        border-radius: 7px;
-        width: 15px;
+        background-color: rgba(100,100,100,0.25);
+        height: 33%;
+        width: 33%;
         z-index: 3;
     }
     .element > .moveButton.up{
@@ -259,7 +258,7 @@ TURN ORDER LIST*/
         display: block;
         box-sizing: border-box;
         overflow: hidden;
-        width: 12%;
+        width: 144px;
         min-height: 200px;
     }
 
