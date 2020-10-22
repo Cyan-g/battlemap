@@ -6,6 +6,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
     <link rel="stylesheet" href="battlemap.css">
+    <link rel="stylesheet" href="tools.css">
+    <link rel="stylesheet" href="grid.css">
     <title>BattleMap</title>
 </head>
 
@@ -48,10 +50,7 @@
                     <ul class="dropdown" >
                         <li><button id="clear">Clear</button></li>
                         <li><button id="save">Save</button></li>
-                        <li><button id="row+">Add Row</button></li>
-                        <li><button id="col+">Add Column</button></li>
-                        <li><button id="row-">Remove Row</button></li>
-                        <li><button id="col-">Remove Column</button></li>
+                        <li><button id="reSize">Resize Map</button></li>
                     </ul>
                 </span>
             </li>
@@ -69,11 +68,22 @@
 
     <div class="popup">
         <input type="text" placeholder="map-name" id="newSave">
-        <a href="#" id="closePopup">X</a>
+        <i id="closePopup" class="fa fa-times"></i>
         <input type="submit" id="submit-save" value="Save">
     </div>
 
+    <div class="resizer">
+        <i id="closeReSize" class="fa fa-times"></i>
+        <label for="rows">Rows</label>
+        <input class="sizeInput" name="rows" type="text" id="rowsInput">
+        <label for="cols">Cols</label>
+        <input class="sizeInput" name="cols" type="text" id="colsInput">
+    </div>
+
     <script src="app.js"></script>
+    <script src="storage.js"></script>
+    <script src="sizing.js"></script>
+    
 </body>
 
 <footer>

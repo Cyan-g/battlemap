@@ -18,13 +18,14 @@ const mapSubmit = document.querySelector("#submit-save");
 //UI GRID HTML
 const UiGrid = document.querySelector(".grid");
 const UIbody = document.querySelector("body");
-const addRowBtn = document.getElementById("row+");
-const delRowBtn = document.getElementById("row-");
-const addColBtn = document.getElementById("col+");
-const delColBtn = document.getElementById("col-");
+const reSizeBtn = document.getElementById("reSize");
+const colsInput = document.getElementById("colsInput");
+const rowsInput = document.getElementById("rowsInput");
+const closeReSize = document.getElementById("closeReSize"); 
 
 const numberPattern = /\d+/g;
 const letterPattern = /\D/;
+const selectPattern = /((col\d+)|(button)|(grid))/;
 
 let tool = "";
 
@@ -32,35 +33,21 @@ var row = 0;
 var col = 0;
 var template = "auto";
 var width = 70;
-var cols = 10;
-var rows = 10;
+var cols = 1;
+var rows = 1;
 
 var saves = [];
 var grid = new Array(1);
 grid[0] =  new Array(1);
 grid[0][0] = new Field(0,0,null);
+
 //==================================================================
 
 //FUNCTIONS
 
 //update grid from array AND HANDLE MOVEMENT
 function gridLoad(){
-    //FIX GRID SIZE
-    while (grid[0].length < rows){
-        addRow();
-    }
 
-    while (grid[0].length > rows){
-        delRow();
-    }
-
-    while (grid.length < cols){
-        addCol();
-    }
-    while (grid.length > cols){
-        delCol();
-    }
-    
     //GENERATE HTML CONTENTS FROM VIRTUAL ARRAY
     document.querySelector(".collection").innerHTML = ""; //TURN ORDER LIST REWRITING
     grid.forEach((column,colindex) => {
@@ -235,10 +222,7 @@ function sortInit(){
 
 //delete content by grid coordinate
 function contentDelete(column,tile){
-    if (grid[column][tile].content != null){
-        if (grid[column][tile].content.item != null){
-        grid[column][tile].content.item.remove();
-        }
+    if (grid[column][tile].content){
     grid[column][tile].content = null;
     }
 }
@@ -280,183 +264,8 @@ function buttonSelect(){
     });
 }
 
-//GRID SIZING
-function addCol(){
-    console.log("add col");
-    grid.push(new Array(grid[0].length));
-    template += " auto";
-    width += 70;
-    let newCol = document.createElement("div");
-    newCol.className = `col${grid.length-1}`;
-    UiGrid.appendChild(newCol);
-
-        for (row = 0; row <= grid[0].length-1; row++){
-            let newField = document.createElement("div");
-            newField.className = `element col${grid.length-1} field${row}`;
-            newField.tabIndex = "1";
-            newCol.appendChild(newField);
-            grid[grid.length-1][row] = new Field(row,grid.length-1,null);
-            interactionEvent(grid[grid.length-1],grid[grid.length-1][row]);
-        }
-}
-
-function delCol(){
-    console.log("del col");
-    let row = 0;
-    while (row <= rows-1){
-        contentDelete(cols,row);
-        row++;
-    }
-    document.querySelector(`.col${cols}`).remove();
-    width -= 70;
-    template = template.slice(0,-5);
-    grid.pop();
-    console.log(grid);
-}
-
-function addRow(){
-    let col = 0;
-    console.log("add row");
-    let row = grid[0].length;
-    while (col < grid.length ){
-        let newField = document.createElement("div");
-        newField.className = `element col${col} field${row}`;
-        newField.tabIndex = "1";
-        document.querySelector(`.col${col}`).appendChild(newField);
-        grid[col].push(new Field(row,col,null));
-        interactionEvent(grid[col],grid[col][row]);
-        col++;
-    }
-    
-}
-
-function delRow(){
-    console.log("del row");
-    let col = 0;
-    while(col <= cols-1 ){
-        contentDelete(col,rows);
-        document.querySelector(`.element.col${col}.field${rows}`).remove();
-        grid[col].pop();
-        col++;
-    }
-    console.log(grid);
-}
-
-
-//Save managing
-function loadSave(newGrid){
-
-    //FIX GRID SIZE
-    while (grid[0].length < newGrid[0].length){
-        addRow();
-        rows++;
-    }
-
-    while (grid[0].length > newGrid[0].length){
-        rows--;
-        delRow();
-    }
-
-    while (grid.length < newGrid.length){
-        addCol();
-        cols++;
-    }
-    while (grid.length > newGrid.length){
-        cols--;
-        delCol();
-    }
-    console.log(grid);
-
-    gridLoad();
-
-    grid = new Array(cols);
-
-    for(col = 0; col <= cols-1;col++){
-        grid[col] = Object.assign(new Array,newGrid[col]);
-    }
-    for(col = 0; col <= cols-1;col++){
-        for(row = 0; row < rows;row++){
-            grid[col][row] = Object.assign(new Field,newGrid[col][row]);
-            
-        }
-    }
-    console.log(grid);
-    gridLoad();
-}
-
-window.addEventListener("load",function(){
-    if(JSON.parse(localStorage.getItem("saves"))){
-        saves = Object.assign(JSON.parse(localStorage.getItem("saves")));
-    }
-    gridLoad();
-})
-
-function removeSave(index){
-    document.getElementById(`${saves[index].ID}`).remove();
-    saves[index] = null;
-    saves.splice(index, 1);
-    localStorage.setItem("saves",JSON.stringify(saves));
-    saveList();
-}
-
-function saveList(){
-    document.querySelector(".maplist").innerHTML = `<h5>Saves</h5>`;
-
-    saves.forEach(save =>{
-        newItem = document.createElement("div");
-        newItem.className = `list-item`;
-        newItem.id = `${save.ID}`;
-
-        newDelBtn = document.createElement("div");
-        newDelBtn.className = "list-delete";
-        newDelBtn.textContent = "X";
-        newDelBtn.id = `${save.ID}`;
-
-        newLoadBtn = document.createElement("div");
-        newLoadBtn.className = "list-load";
-        newLoadBtn.id = `${save.ID}`;
-        
-        newItem.appendChild(newDelBtn);
-        newItem.appendChild(newLoadBtn);
-
-        newLoadBtn.addEventListener("click",function(e){
-            console.log(saves.findIndex(save => save.ID == e.target.id));
-            loadSave(saves[saves.findIndex(save => save.ID == e.target.id)].loadout);
-        })
-
-        newDelBtn.addEventListener("click",function(e){
-            removeSave(saves.findIndex(save => save.ID == e.target.id));
-        })
-
-        newItem.appendChild(document.createTextNode(save.name));
-        document.querySelector(".maplist").appendChild(newItem);
-    })
-}
 // CONSTRUCTORS
 
-function Save(ID){
-
-    if(mapName.value=="" || mapName.value.length > 13){
-        alert("Please enter a name for your map between 1 and 13 characters");
-    }else{
-        this.ID = ID;
-        this.name = mapName.value;
-        this.loadout = new Array(cols);
-        //DEEP COPY GRID
-        for(col = 0; col <= cols-1;col++){
-            this.loadout[col] = Object.assign(new Array,grid[col]);
-            }
-        for(col = 0; col <= cols-1;col++){
-            for(row = 0; row <= rows-1;row++){
-                this.loadout[col][row] = Object.assign(new Field,grid[col][row]);
-            }
-        }
-
-        mapName.value= "";
-        popup.style.display = "none";
-        console.log(saves);
-    }
-}
 
 function Field(row,col,content){
     this.field = document.querySelector(`.field${row}.col${col}`);
@@ -601,7 +410,7 @@ function loadEventListeners(){
 
     //TOOL DESELECTING BY CLICKING OUT
     document.querySelector("body").addEventListener("click",function(e){
-        if ((e.target.classList.contains("element") === false)&&(e.target.classList.contains("button") === false)&&(e.target.classList.contains("grid") === false)){
+        if (!selectPattern.test(JSON.stringify(e.target.classList))){
             tool = "";
             buttonSelect();
         }
@@ -661,37 +470,29 @@ function loadEventListeners(){
         gridLoad();
     });
 
-    // GRID RESIZING FUNCTIONS
-    addColBtn.addEventListener("click",function(){
-        cols++;
-        gridLoad();
+    // GRID RESIZING FUNCTION
+    reSizeBtn.addEventListener("click",function(){
+        document.querySelector(".resizer").style.display = "block";
+    }) 
+
+    closeReSize.addEventListener("click",function(){
+        document.querySelector(".resizer").style.display = "none";
     })
 
-    delColBtn.addEventListener("click",function(){
-        if(cols == 1){
-            alert("There can't be less than 1 column");
+    rowsInput.addEventListener("blur",function(){
+        if(letterPattern.test(rowsInput.value)){
+            rowsInput.value = grid[0].length;
         }else{
-            
-        cols--;
-        gridLoad();
+            reSize(parseInt(colsInput.value),parseInt(rowsInput.value));
         }
     })
 
-    addRowBtn.addEventListener("click",function(){
-        
-        rows++;
-        gridLoad();
-        
-    })
-
-    delRowBtn.addEventListener("click",function(){
-        if (rows===1){
-            alert("There can't be less than 1 row!");
+    colsInput.addEventListener("blur",function(){
+        if(letterPattern.test(colsInput.value)){
+            colsInput.value = grid.length;
         }else{
-        rows--;
-        gridLoad();
+            reSize(parseInt(colsInput.value),parseInt(rowsInput.value));
         }
-        
     })
 }
 

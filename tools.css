@@ -1,0 +1,250 @@
+/*=================================================================================================================
+TOOLBAR*/
+.toolbar{
+    display: flex;
+    margin-bottom: 0;
+    flex-wrap: wrap;
+}
+.toolbar > .button{
+    flex: 1;
+    z-index: 4;
+    display: block;
+    box-sizing: border-box;
+    padding: 0px 0px 0px 0px;
+    background-color: rgb(151, 151, 151);
+    margin: 0px 20px;
+    border:black solid 2px;
+    border-bottom: none;
+    border-radius: 10px 10px 0px 0px;
+}
+
+.toolbar > .button:hover{
+    background-color:  rgba(100,100,100,1);
+}
+
+.toolbar .button.selected{
+    background-color:black;
+    color: white;
+}
+
+/* ================================================================
+DROPDOWN MENU*/
+    .menu{
+        position: relative;
+        display: inline-block;
+        min-width: 50px;
+    }
+    .dropdown {
+        box-sizing: border-box;
+        display: none;
+        position: absolute;
+        background-color: rgb(218, 218, 218);
+        border: solid black 2px;
+        border-radius: 0px 0px 10px 0px;
+        z-index: 10;
+    }
+
+    .dropdown li:hover{
+        background-color: rgb(196, 196, 196); ;
+    }
+
+    .menu:hover .dropdown{
+        display: block;
+        border-bottom: black solid 1px;
+        overflow: hidden;
+    }
+
+    
+.resizer{
+    display: none;
+    position: fixed;
+    top: 10%;
+    right: 0%;
+    width: 100px;
+    background-color: lightgray;
+    z-index: 10;
+    transform: translate(-50%, 0%);
+    border-radius: 15px;
+    border: solid black 2px;
+    padding-top: 10px;
+}
+
+.resizer > i{
+    cursor: pointer;
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    top: 2%;
+    right: 2%;
+}
+
+body > .resizer > .sizeinput{
+    text-align: center;
+    border-radius: 15px;
+    width: 50%;
+    margin-right: 10px;
+    background-color: white;
+}
+/* DROPDOWN END 
+==============================================================================================================
+TOOLBAR END*/
+
+
+/* ===========================================================================================================
+TURN ORDER LIST*/
+
+.initiative{
+    margin-top: 80px;
+    display: block;
+    float: left;
+    position: sticky;
+    left: 0;
+    top: 5%;
+    z-index: 5;
+    box-sizing: border-box;
+    max-width: 200px;
+    width: 12%;
+    min-height: 200px;
+    background-color: lightgray;
+    border: solid black 2px;
+    border-left: none;
+    border-radius: 0px 15px 15px 0px;
+
+}
+
+#newEntity{
+    text-align: center;
+    width: 80%;
+    background-color: white;
+    border-radius: 5px;
+}
+#init{
+    text-align: center;
+    width: 80%;
+    min-width: 30px;
+    background-color: white;
+    border-radius: 5px;
+}
+.list-item{
+    display:block;
+    box-sizing: border-box;
+    margin-left: 20px;
+    width: 80%;
+    margin-bottom: 5px;
+    text-align: center;
+    background-color: white;
+    border-radius: 5px;
+}
+
+/*MAP SAVE LIST*/
+.box{
+    right: 0;
+    z-index: 2;
+    top: 5%;
+    float: right;
+    position: sticky;
+    margin-top: 80px;
+    display: block;
+    box-sizing: border-box;
+    overflow: hidden;
+    width: 144px;
+    min-height: 200px;
+}
+
+.maplist{
+    display: block;
+    float: right;
+    transform: translateX(85%);
+    z-index: 11;
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 200px;
+    background-color: lightgray;
+    border: solid black 2px;
+    border-right: none;
+    border-radius:  15px 0px 0px 15px;
+}
+
+.maplist > .list-item{
+    font-size: smaller;
+    position: relative;
+    border: solid black 2px;
+}
+.maplist > .list-item > .list-load{
+
+    position: absolute;
+    display: block;
+    box-sizing: border-box;
+    left: -18%;
+    top: 50%;
+    transform: translate(0, -50%);
+    width: 16px;
+    height: 16px;
+    border-radius: 8px;
+    background-color: teal;
+    cursor: pointer;
+}
+.maplist > .list-item > .list-load:hover{
+
+    background-color: lightblue;
+}
+.maplist > .list-item > .list-delete{
+
+    color: red;        
+    position: absolute;
+    right: 2%;
+    display: block;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+
+.maplist:hover{
+    transition: ease-in-out 0.5s;
+    transform: translateX(0%);
+}
+
+/* SAVE POPUP*/
+.popup{
+    display: none;
+    position: fixed;
+    top: 20%;
+    left: 50%;
+    width: 300px;
+    height: 100px;
+    background-color: lightgray;
+    z-index: 10;
+    transform: translate(-50%, 0%);
+    border-radius: 15px;
+    border: solid black 2px;
+}
+
+.popup > a{
+    float: right;
+    transform: translateX(-100%);
+}
+
+.popup > i{
+    cursor: pointer;
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    top: 5%;
+    right: 1%;
+}
+
+#newSave{
+    text-align: center;
+    background-color: white;
+    width: 80%;
+    margin-top: 5%;
+    border-radius: 10px;
+}
+
+#submit-save{ 
+    text-align: center;
+    background-color: white;
+    width: 50%;
+    margin-bottom: 5%;
+    border-radius: 10px;
+
+}
