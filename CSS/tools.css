@@ -112,19 +112,6 @@ TURN ORDER LIST*/
 
 }
 
-#newEntity{
-    text-align: center;
-    width: 80%;
-    background-color: white;
-    border-radius: 5px;
-}
-#init{
-    text-align: center;
-    width: 80%;
-    min-width: 30px;
-    background-color: white;
-    border-radius: 5px;
-}
 .list-item{
     display:block;
     box-sizing: border-box;
@@ -247,4 +234,45 @@ TURN ORDER LIST*/
     margin-bottom: 5%;
     border-radius: 10px;
 
+}
+
+/*ENTITY DETAIL WINDOW*/
+
+.entityDetail{
+    display: none;
+    position: fixed;
+    top: 20%;
+    left: 50%;
+    width: 300px;
+    height: 200px;
+    background-color: lightgray;
+    z-index: 10;
+    transform: translate(-50%, 0%);
+    border-radius: 15px;
+    border: solid black 2px;
+}
+
+.entityDetail > i{
+    cursor: pointer;
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    top: 5%;
+    right: 1%;
+}
+
+#newEntity{
+    text-align: center;
+    width: 80%;
+    background-color: white;
+    border-radius: 5px;
+}
+#init{
+    text-align: center;
+    width: 80%;
+    background-color: white;
+    border-radius: 5px;
+}
+#entityColor{
+    width: 30%;
 }

@@ -14,7 +14,8 @@ function loadSave(newGrid){
             
         }
     }
-    console.log(grid);
+    colsInput.value = grid.length;
+    rowsInput.value = grid[0].length;
     gridLoad();
 }
 
