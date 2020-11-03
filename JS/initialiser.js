@@ -10,6 +10,7 @@ const entitColor = document.querySelector("#entityColor");
 const closeEntity = document.getElementById("closeEntityDetail");
 
 const newObjectBtn = document.getElementById("object");
+
 const deleteBtn = document.getElementById("delete");
 const saveMapBtn = document.getElementById("save");
 const clearBtn = document.getElementById("clear");
@@ -28,7 +29,7 @@ const closeReSize = document.getElementById("closeReSize");
 
 const numberPattern = /\d+/g;
 const letterPattern = / \D/;
-const selectPattern = /((col\d+)|(button)|(grid))/;
+const selectPattern = /((col\d+)|(button)|(objects)|(grid))/;
 
 let tool = "";
 

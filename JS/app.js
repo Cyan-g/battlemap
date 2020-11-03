@@ -11,15 +11,32 @@ function gridLoad(){
         column.forEach((tile,index) =>{
             tile.field = document.querySelector(`.element.col${colindex}.field${index}`);
             tile.field.innerHTML = "";
-
+            tile.buttons = null;
+            tile.isWalkable = true;
+            tile.field.textContent = "";
+            tile.field.style.backgroundImage = "";
+            //OBJECT TYPE GENERATING (BACKGROUND)
             switch(tile.type){
 
                 case "wall":
                     tile.field.style.background = "black";
-                    tile.field.textContent = "";
-                    tile.buttons = null;
+                    tile.isWalkable = false;
                     break;
                 
+                case "water":
+                    tile.field.style.background = "lightblue"
+                    break;
+
+                case "tree":
+                    tile.field.style.backgroundImage = "url(Images/Tree.png)";
+                    tile.isWalkable = false;
+                    break;
+
+                case "barrel":
+                    tile.field.style.backgroundImage = "url(Images/Barrel.png)";
+                    tile.isWalkable = false;
+                    break;
+
                 case "empty":
                     tile.field.style.background = "white";
                     break;
@@ -27,8 +44,8 @@ function gridLoad(){
 
             if(tile.content){
                 if(tile.content.entity){
+                    tile.isWalkable = false;
                     tile.field.style.color = "white";
-                    tile.field.style.background = "white";
 
                     tile.buttons = new MoveButtons();
                     tile.field.appendChild(tile.buttons.up);
@@ -62,9 +79,7 @@ function gridLoad(){
                     tile.buttons.left.style.fontSize = (tile.field.clientWidth)/3;
                     tile.buttons.right.style.fontSize = (tile.field.clientWidth)/3;
                 }
-            }
-
-        else{
+            }else{
                 tile.field.style.color = "black";
                 tile.field.textContent = "";
                 if(tile.buttons){tile.buttons = null}
@@ -94,7 +109,7 @@ function gridLoad(){
                         return;
                     }
                     
-                    if(grid[row][col-1].type == "wall"){
+                    if(grid[row][col-1].isWalkable === false){
                         alert("Can't move there");
                         return;
                     }
@@ -118,7 +133,7 @@ function gridLoad(){
                         return;
                     }
 
-                    if(grid[row+1][col].type == "wall"){
+                    if(grid[row+1][col].isWalkable === false){
                         alert("Can't move there");
                         return;
                     }
@@ -143,7 +158,7 @@ function gridLoad(){
                         return;
                     }
 
-                    if(grid[row][col+1].type == "wall"){
+                    if(grid[row][col+1].isWalkable === false){
                         alert("Can't move there");
                         return;
                     }
@@ -168,7 +183,7 @@ function gridLoad(){
                         return;
                     }
 
-                    if(grid[row-1][col].type == "wall"){
+                    if(grid[row-1][col].isWalkable === false){
                         alert("Can't move there");
                         return;
                     }
@@ -208,21 +223,22 @@ function sortInit(){
     itemsArr.sort(function(a, b) {
         A = a.innerHTML.match(numberPattern);
         B = b.innerHTML.match(numberPattern);
-        console.log(A.pop(),B.pop());
         return a.innerHTML == b.innerHTML
                 ? 0
-                : (A.pop() > B.pop ? -1 : 1);
+                : (parseInt(A.pop()) > parseInt(B.pop()) ? -1 : 1);
     });
 
     for (i = 0; i < itemsArr.length; ++i) {
-    list.appendChild(itemsArr[i]);
-}
+        list.appendChild(itemsArr[i]);
+    }
 }
 
 //delete content by grid coordinate
 function contentDelete(column,tile){
     if (grid[column][tile].content){
     grid[column][tile].content = null;
+    grid[column][tile].type = "empty";
+    grid[column][tile].isWalkable = true;
     }
 }
 
@@ -255,7 +271,6 @@ function buttonSelect(){
     var toolbar = document.querySelectorAll(".button");
  
     toolbar.forEach(currentBtn =>{
-        
         currentBtn.classList.remove("selected");
         if (currentBtn.id === `${tool}`){
             currentBtn.classList.add("selected");
@@ -306,6 +321,7 @@ function Field(row,col,content){
     this.content = content;
     this.buttons = null;
     this.type = "empty";
+    this.isWalkable = true;
 }
 
 function Entity(name,init,color){
@@ -363,7 +379,7 @@ function interactionEvent(column,tile){
     
             case "object":
                 contentDelete(col,row);
-                grid[col][row].type = "wall";
+                grid[col][row].type = document.querySelector("#objects").value;
             break;
     
             default:

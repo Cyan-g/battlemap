@@ -9,6 +9,8 @@
 }
 
 .element{
+    background-repeat: no-repeat !important;
+    background-size: cover !important;
     overflow: hidden;
     border-radius: 5px;
     background-color: white;

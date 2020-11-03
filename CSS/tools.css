@@ -1,6 +1,7 @@
 /*=================================================================================================================
 TOOLBAR*/
 .toolbar{
+    position: relative;
     display: flex;
     margin-bottom: 0;
     flex-wrap: wrap;
@@ -27,25 +28,12 @@ TOOLBAR*/
     color: white;
 }
 
-/* ================================================================
-DROPDOWN MENU*/
-    .menu{
-        position: relative;
-        display: inline-block;
-        min-width: 50px;
-    }
-    .dropdown {
-        box-sizing: border-box;
-        display: none;
-        position: absolute;
-        background-color: rgb(218, 218, 218);
-        border: solid black 2px;
-        border-radius: 0px 0px 10px 0px;
-        z-index: 10;
-    }
 
-    .dropdown li:hover{
-        background-color: rgb(196, 196, 196); ;
+/* ================================================================
+DROPDOWN MENUS*/
+    .objects{
+        margin-top: 2px;
+        max-height: 20px;
     }
 
     .menu:hover .dropdown{
@@ -53,6 +41,23 @@ DROPDOWN MENU*/
         border-bottom: black solid 1px;
         overflow: hidden;
     }
+
+    .dropdown {
+        min-width: fit-content;
+        width: 20.25%;
+        box-sizing: border-box;
+        display: none;
+        position: absolute;
+        background-color: rgb(218, 218, 218);
+        border: solid black 2px;
+        border-radius: 0px 0px 10px 10px;
+        z-index: 10;
+    }
+
+    .dropdown li:hover{
+        background-color: rgb(196, 196, 196); ;
+    }
+
 
     
 .resizer{
