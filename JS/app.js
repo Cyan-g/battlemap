@@ -11,16 +11,25 @@ function gridLoad(){
         column.forEach((tile,index) =>{
             tile.field = document.querySelector(`.element.col${colindex}.field${index}`);
             tile.field.innerHTML = "";
-            if(tile.content){
-                if (tile.content.object){
+
+            switch(tile.type){
+
+                case "wall":
                     tile.field.style.background = "black";
                     tile.field.textContent = "";
                     tile.buttons = null;
-    
-                }else if(tile.content.entity){
+                    break;
+                
+                case "empty":
+                    tile.field.style.background = "white";
+                    break;
+            }
+
+            if(tile.content){
+                if(tile.content.entity){
                     tile.field.style.color = "white";
                     tile.field.style.background = "white";
-    
+
                     tile.buttons = new MoveButtons();
                     tile.field.appendChild(tile.buttons.up);
                     tile.field.appendChild(tile.buttons.right);
@@ -33,7 +42,7 @@ function gridLoad(){
                         newItem.appendChild(document.createTextNode(`${tile.content.name} \n init: ${tile.content.init}`));
                         document.querySelector(".collection").appendChild(newItem);
                     }
-    
+
                     tile.display = new Display(`${tile.content.name.slice(0,1)}${tile.content.name.slice(-1)}`);
                     tile.field.appendChild(tile.display.item);
                     tile.display.item.style.background = tile.content.color;
@@ -55,11 +64,10 @@ function gridLoad(){
                 }
             }
 
-            else{
-                    tile.field.style.color = "black";
-                    tile.field.style.background = "white";
-                    tile.field.textContent = "";
-                    if(tile.buttons){tile.buttons = null}
+        else{
+                tile.field.style.color = "black";
+                tile.field.textContent = "";
+                if(tile.buttons){tile.buttons = null}
             }
         });
     });
@@ -85,6 +93,11 @@ function gridLoad(){
                         alert("Can't move there");
                         return;
                     }
+                    
+                    if(grid[row][col-1].type == "wall"){
+                        alert("Can't move there");
+                        return;
+                    }
 
                     let targetField = grid[row][col-1].content;
 
@@ -101,6 +114,11 @@ function gridLoad(){
                 //RIGHT
                 if(e.target.classList.contains("right")){
                      if(row==grid.length){
+                        alert("Can't move there");
+                        return;
+                    }
+
+                    if(grid[row+1][col].type == "wall"){
                         alert("Can't move there");
                         return;
                     }
@@ -125,6 +143,11 @@ function gridLoad(){
                         return;
                     }
 
+                    if(grid[row][col+1].type == "wall"){
+                        alert("Can't move there");
+                        return;
+                    }
+
                     let targetField = grid[row][col+1].content;
                     
                     if (targetField === null){
@@ -141,6 +164,11 @@ function gridLoad(){
                 //LEFT
                 if(e.target.classList.contains("left")){
                     if(row==0){
+                        alert("Can't move there");
+                        return;
+                    }
+
+                    if(grid[row-1][col].type == "wall"){
                         alert("Can't move there");
                         return;
                     }
@@ -180,9 +208,10 @@ function sortInit(){
     itemsArr.sort(function(a, b) {
         A = a.innerHTML.match(numberPattern);
         B = b.innerHTML.match(numberPattern);
+        console.log(A.pop(),B.pop());
         return a.innerHTML == b.innerHTML
                 ? 0
-                : (A.pop() > B.pop() ? -1 : 1);
+                : (A.pop() > B.pop ? -1 : 1);
     });
 
     for (i = 0; i < itemsArr.length; ++i) {
@@ -276,11 +305,7 @@ function Field(row,col,content){
     this.field = document.querySelector(`.field${row}.col${col}`);
     this.content = content;
     this.buttons = null;
-}
-
-function UIObject(){
-    this.object = true;
-    this.name = "wall";
+    this.type = "empty";
 }
 
 function Entity(name,init,color){
@@ -338,7 +363,7 @@ function interactionEvent(column,tile){
     
             case "object":
                 contentDelete(col,row);
-                grid[col][row].content = new UIObject();
+                grid[col][row].type = "wall";
             break;
     
             default:
