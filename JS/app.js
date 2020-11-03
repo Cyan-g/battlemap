@@ -1,53 +1,5 @@
-//======================================INITIALIZE VARIABLES
-const entityName = document.querySelector("#newEntity");
-const entityInit = document.querySelector("#init");
 
-//TOOLS HTML
-const newEntityBtn = document.querySelector("#entity");
-const entitySubmit = document.querySelector("#entitySubmit");
-const entityPopup = document.querySelector(".entityDetail");
-const entitColor = document.querySelector("#entityColor");
-const closeEntity = document.getElementById("closeEntityDetail");
-
-const newObjectBtn = document.getElementById("object");
-const deleteBtn = document.getElementById("delete");
-const saveMapBtn = document.getElementById("save");
-const clearBtn = document.getElementById("clear");
-const closePopup = document.getElementById("closePopup");
-const popup = document.querySelector(".popup");
-const mapName = document.querySelector("#newSave");
-const mapSubmit = document.querySelector("#submit-save");
-
-//UI GRID HTML
-const UiGrid = document.querySelector(".grid");
-const UIbody = document.querySelector("body");
-const reSizeBtn = document.getElementById("reSize");
-const colsInput = document.getElementById("colsInput");
-const rowsInput = document.getElementById("rowsInput");
-const closeReSize = document.getElementById("closeReSize"); 
-
-const numberPattern = /\d+/g;
-const letterPattern = / \D/;
-const selectPattern = /((col\d+)|(button)|(grid))/;
-
-let tool = "";
-
-var selectedRow = 0;
-var selectedCol = 0;
-var row = 0;
-var col = 0;
-var template = "auto";
-var width = 70;
-var cols = 1;
-var rows = 1;
- 
-var saves = [];
-var grid = new Array(1);
-grid[0] =  new Array(1);
 grid[0][0] = new Field(0,0,null);
-
-//==================================================================
-
 //FUNCTIONS
 
 //update grid from array AND HANDLE MOVEMENT
@@ -116,10 +68,9 @@ function gridLoad(){
     UiGrid.style.gridTemplateColumns = template;
     UiGrid.style.minWidth = `${width}px`;
     UIbody.style.minWidth = `${width * 1.4}px`;
-    sortInit();
+    
     //BUTTON MOVE HANDLING
     const moveBtns = document.querySelectorAll(".moveButton");
-
     if (moveBtns.length > 0){
         moveBtns.forEach(movebtn =>{
             movebtn.addEventListener("click",function(e){
@@ -211,13 +162,13 @@ function gridLoad(){
         })
     }
 
+    sortInit();
     saveList();
     console.log(grid);
 }
 
 function sortInit(){
     var list = document.querySelector('.collection');
-
     var items = list.childNodes;
     var itemsArr = [];
     for (var i in items) {
@@ -227,9 +178,11 @@ function sortInit(){
     }
 
     itemsArr.sort(function(a, b) {
-    return a.innerHTML == b.innerHTML
-            ? 0
-            : (a.innerHTML.match(numberPattern)[-1] > b.innerHTML.match(numberPattern)[-1] ? -1 : 1);
+        A = a.innerHTML.match(numberPattern);
+        B = b.innerHTML.match(numberPattern);
+        return a.innerHTML == b.innerHTML
+                ? 0
+                : (A.pop() > B.pop() ? -1 : 1);
     });
 
     for (i = 0; i < itemsArr.length; ++i) {
@@ -319,8 +272,6 @@ function createEntity(col,row){
 }
 
 // CONSTRUCTORS
-
-
 function Field(row,col,content){
     this.field = document.querySelector(`.field${row}.col${col}`);
     this.content = content;
