@@ -236,10 +236,10 @@ function sortInit(){
 //delete content by grid coordinate
 function contentDelete(column,tile){
     if (grid[column][tile].content){
+    }
     grid[column][tile].content = null;
     grid[column][tile].type = "empty";
     grid[column][tile].isWalkable = true;
-    }
 }
 
 //check for unique EntityName
